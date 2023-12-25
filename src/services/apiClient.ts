@@ -1,4 +1,6 @@
 import axios from "axios";
+import { CreateOrJoinSpaceRequest } from "models/requests";
+import { CreateOrJoinSpaceResponse } from "models/responses";
 
 const { REACT_APP_BASE_API, REACT_APP_APPLICATION_TOKEN } = process.env;
 // const token = JSON.parse(localStorage.getItem("token") || "null");
@@ -13,43 +15,43 @@ export const test = async () => {
   return data;
 };
 
-export const createSpace = async (
-  token: string,
-  name: string,
-  color: string
-) => {
+export const createSpace = async ({
+  name,
+  amandaId,
+  color,
+}: CreateOrJoinSpaceRequest) => {
   const { data } = await apiClient.post("space/create-or-join", {
-    token,
+    token: amandaId,
     name,
     color,
   });
-  return data;
+  return data as CreateOrJoinSpaceResponse;
 };
 
-export const updateSpace = async (spaceId: string, name: string) => {
+export const updateSpace = async (spaceId: number, name: string) => {
   const { data } = await apiClient.put(`space/${spaceId}`, {
     name,
   });
   return data;
 };
 
-export const startSession = async (spaceId: string, roundNumber: number) => {
+export const startSession = async (spaceId: number, roundNumber?: number) => {
   const { data } = await apiClient.post(`space/${spaceId}/start-session`, {
-    roundNumber,
+    roundNumber: roundNumber || 1,
   });
   return data;
 };
 
-export const nextQuestion = async (sessionId: string) => {
+export const getNextQuestion = async (sessionId: number) => {
   const { data } = await apiClient.get(`session/${sessionId}/next-question`);
   return data;
 };
 
 export const answerQuestion = async (
-  sessionId: string,
-  userId: string,
-  questionId: string,
-  chosenUserId: string
+  sessionId: number,
+  userId: number,
+  questionId: number,
+  chosenUserId: number
 ) => {
   const { data } = await apiClient.post(
     `session/${sessionId}/user/${userId}/answer`,
@@ -62,8 +64,8 @@ export const answerQuestion = async (
 };
 
 export const getQuestionResult = async (
-  sessionId: string,
-  questionId: string
+  sessionId: number,
+  questionId: number
 ) => {
   const { data } = await apiClient.get(
     `session/${sessionId}/question/${questionId}/result`
@@ -71,7 +73,7 @@ export const getQuestionResult = async (
   return data;
 };
 
-export const endGame = async (sessionId: string) => {
+export const endGame = async (sessionId: number) => {
   const { data } = await apiClient.get(`session/${sessionId}/summarize`);
   return data;
 };

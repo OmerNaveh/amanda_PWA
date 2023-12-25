@@ -10,15 +10,11 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-gradient-custom text-primary-button-text text-center rounded-lg active:opacity-60 disabled:opacity-60",
-        drink:
-          "text-4xl h-16 bg-gradient-custom text-primary-button-text font-bold text-center rounded-lg tracking-[.2em] active:opacity-70 disabled:opacity-60",
+          "bg-primary text-white text-center rounded-lg active:opacity-60 disabled:opacity-60",
         outline:
           "border border-primary bg-transparent text-primary rounded-lg active:opacity-60 disabled:opacity-60",
         underline:
           "text-primary bg-transparent underline active:opacity-70 disabled:opacity-60",
-        login:
-          "grid place-items-center border border-border bg-white text-secondary-text shadow-md rounded-xl active:opacity-70 disabled:opacity-60",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         secondary:
@@ -28,8 +24,6 @@ const buttonVariants = cva(
       },
       size: {
         default: "h-11 w-full p-2",
-        drink: "h-16 w-full p-2",
-        login: "h-16 w-16 p-2 m-0",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
