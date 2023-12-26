@@ -10,6 +10,7 @@ type props = {
   loadingNextQuestion: boolean;
   finishGame: () => void;
 };
+
 const QuestionResult = ({
   participents,
   result,
@@ -18,30 +19,25 @@ const QuestionResult = ({
   finishGame,
 }: props) => {
   const [currentHighlight, setCurrentHighlight] = useState<number>(0);
-  const [winners, setWinners] = useState<User[]>([]);
+  const [animationInProgress, setAnimationInProgress] = useState<boolean>(true);
 
   useEffect(() => {
-    const cycleParticipants = setTimeout(() => {
-      setCurrentHighlight((prev) => (prev + 1) % participents.length);
+    if (!animationInProgress) {
+      return;
+    }
+    const winnerIds = result.map((winner) => winner.id);
+    const timeout = setTimeout(() => {
+      // Increment the highlight index
+      const nextHighlight = (currentHighlight + 1) % participents.length;
+      setCurrentHighlight(nextHighlight);
+      // Check if conditions are met to stop the animation
+      if (winnerIds.includes(participents[nextHighlight].id)) {
+        setAnimationInProgress(false);
+      }
     }, 200); // Adjust time for faster or slower cycling
 
-    if (winners.length > 0) {
-      clearTimeout(cycleParticipants);
-    }
-
-    return () => clearTimeout(cycleParticipants);
-  }, [currentHighlight, participents.length, winners]);
-
-  useEffect(() => {
-    const announceWinners = setTimeout(() => {
-      setWinners(result);
-    }, participents.length * 500); // Adjust timing based on the number of participants
-
-    return () => clearTimeout(announceWinners);
-  }, [participents.length, result]);
-
-  const isWinner = (userId: number) =>
-    winners.some((winner) => winner.id === userId);
+    return () => clearTimeout(timeout);
+  }, [currentHighlight, participents, result, animationInProgress]);
 
   return (
     <div className="flex flex-col gap-4 h-full">
@@ -63,20 +59,18 @@ const QuestionResult = ({
             </div>
           ))}
         </div>
-        {winners.length > 0 && (
+        {animationInProgress === false && (
           <div className="mt-6">
             <h3 className="text-xl font-semibold">
-              {winners.length >= 2 ? "Winners" : "Winner"}:
+              {result.length >= 2 ? "Winners" : "Winner"}:
             </h3>
             <ul>
-              {winners.map((winner) => (
+              {result.map((winner) => (
                 <li
                   key={winner.id}
                   className="mt-2 p-2"
                   style={{
-                    backgroundColor: isWinner(winner.id)
-                      ? `rgb(${winner.color})`
-                      : "",
+                    backgroundColor: winner.id ? `rgb(${winner.color})` : "",
                   }}
                 >
                   {winner.name}
