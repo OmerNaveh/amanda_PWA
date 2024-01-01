@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
+    --background: rgb(20, 20, 20);
+    --foreground: rgb(100, 100, 120);
 
     --muted: 223 47% 11%;
     --muted-foreground: 215.4 16.3% 56.9%;
@@ -22,10 +22,11 @@
     --card: 224 71% 4%;
     --card-foreground: 213 31% 91%;
 
-    --primary: #5d3587;
+    --primary: rgb(190, 82, 255);
     --primary-foreground: 222.2 47.4% 1.2%;
+    --primary-text: rgb(210, 210, 210);
 
-    --secondary: #a367b1;
+    --secondary: rgb(64, 224, 208);
     --secondary-foreground: 210 40% 98%;
 
     --destructive: 0 63% 31%;
@@ -61,5 +62,13 @@
 }
 
 .page-height {
-  height: calc(100% - 3rem);
+  height: calc(100% - 4rem);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+  -webkit-text-fill-color: #fff !important;
 }

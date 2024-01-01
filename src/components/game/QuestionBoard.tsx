@@ -9,12 +9,14 @@ type props = {
 const QuestionBoard = ({ question, participents, selectAnswer }: props) => {
   return (
     <div className="flex flex-col gap-4 h-full">
-      <h2 className="text-2xl font-bold mb-4">Question</h2>
-      <p className="text-lg mb-6">{question.content}</p>
+      <div className="flex-shrink-0 flex flex-col gap-2">
+        <h2 className="text-2xl font-bold">Question</h2>
+        <p className="text-lg mb-2">{question.content}</p>
+      </div>
 
-      <div>
+      <div className="flex flex-col flex-grow min-h-0">
         <h3 className="text-xl font-semibold mb-3">Select your answer:</h3>
-        <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-4 max-h-64 overflow-y-auto">
+        <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-4 overflow-y-auto min-h-0">
           {participents.map((participant) => (
             <button
               key={participant.id}
@@ -25,7 +27,9 @@ const QuestionBoard = ({ question, participents, selectAnswer }: props) => {
                 className="h-16 w-16 rounded-full mb-2"
                 style={{ backgroundColor: `rgb(${participant.color})` }}
               ></div>
-              <span className="line-clamp-1">{participant.name}</span>
+              <span className="line-clamp-1 text-white">
+                {participant.name}
+              </span>
             </button>
           ))}
         </div>

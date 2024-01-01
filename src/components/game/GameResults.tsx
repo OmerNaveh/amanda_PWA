@@ -6,13 +6,29 @@ import { User } from "models/user";
 import { startSession } from "services/apiClient";
 import CircularProgress from "components/ui/CircularProgress";
 import { useNavigate } from "react-router-dom";
+import { QuestionTypeResponse } from "models/responses";
 type props = {
   spaceId: number;
+  userId: number;
   gameSummary: User[];
+  selectedQuestionType: QuestionTypeResponse | null;
 };
-const GameResults = ({ spaceId, gameSummary }: props) => {
+const GameResults = ({
+  spaceId,
+  gameSummary,
+  userId,
+  selectedQuestionType,
+}: props) => {
   const navigate = useNavigate();
-  const { mutate, isLoading } = useMutation(() => startSession(spaceId), {});
+  const { mutate, isLoading } = useMutation(
+    () =>
+      startSession({
+        spaceId,
+        userId,
+        questionTypeId: selectedQuestionType?.id,
+      }),
+    {}
+  );
   const playNewGame = async () => {
     mutate();
   };

@@ -2,7 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MessageEvent } from "pubnub";
 import { useToast } from "components/ui/useToast";
-import { CreateOrJoinSpaceResponse } from "models/responses";
+import {
+  CreateOrJoinSpaceResponse,
+  QuestionTypeResponse,
+} from "models/responses";
 import usePubnub from "hooks/usePubnub";
 import { User } from "models/user";
 import { PUBNUB_MESSAGE, PUBNUB_MESSAGE_TYPE } from "models/pubnub";
@@ -15,6 +18,8 @@ const GameRoom = () => {
   const [participents, setParticipents] = useState<User[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [sessionId, setSessionId] = useState<number | null>(null);
+  const [selectedQuestionType, setSelectedQuestionType] =
+    useState<QuestionTypeResponse | null>(null);
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [isGameFinished, setIsGameFinished] = useState(false);
   const [question, setQuestion] = useState<Question | null>(null);
@@ -42,6 +47,7 @@ const GameRoom = () => {
         setResult(null);
         setSessionId(pubnubData.session.id);
         setQuestion(pubnubData.question);
+        setSelectedQuestionType(pubnubData.questionType);
         break;
       case PUBNUB_MESSAGE_TYPE.END_GAME:
         setQuestion(null);
@@ -60,6 +66,7 @@ const GameRoom = () => {
         break;
     }
   }, []);
+
   const { connectToPubnub, handleDisconnectFromPubnub } = usePubnub({
     handleMessage,
   });
@@ -86,7 +93,11 @@ const GameRoom = () => {
   return (
     <div className="flex flex-col text-center gap-4 px-4 py-4 page-height">
       {!isGameStarted && !isGameFinished && (
-        <WaitingRoom participents={participents} spaceId={spaceData.space.id} />
+        <WaitingRoom
+          participents={participents}
+          spaceId={spaceData.space.id}
+          userId={user?.id!}
+        />
       )}
       {isGameStarted &&
         !isGameFinished &&
@@ -104,7 +115,12 @@ const GameRoom = () => {
           />
         )}
       {!!isGameFinished && !!gameSummary && (
-        <GameResults spaceId={spaceData.space.id} gameSummary={gameSummary} />
+        <GameResults
+          spaceId={spaceData.space.id}
+          gameSummary={gameSummary}
+          userId={user?.id!}
+          selectedQuestionType={selectedQuestionType}
+        />
       )}
     </div>
   );

@@ -1,19 +1,16 @@
 import axios from "axios";
-import { CreateOrJoinSpaceRequest } from "models/requests";
-import { CreateOrJoinSpaceResponse } from "models/responses";
+import { CreateOrJoinSpaceRequest, StartSessionRequest } from "models/requests";
+import {
+  CreateOrJoinSpaceResponse,
+  QuestionTypeResponse,
+} from "models/responses";
 
 const { REACT_APP_BASE_API, REACT_APP_APPLICATION_TOKEN } = process.env;
-// const token = JSON.parse(localStorage.getItem("token") || "null");
+
 export const apiClient = axios.create({
   baseURL: REACT_APP_BASE_API,
   headers: { applicationToken: REACT_APP_APPLICATION_TOKEN! },
 });
-// axios.defaults.headers.common["userAuthToken"] = token;
-
-export const test = async () => {
-  const { data } = await apiClient.get("");
-  return data;
-};
 
 export const createSpace = async ({
   name,
@@ -35,10 +32,22 @@ export const updateSpace = async (spaceId: number, name: string) => {
   return data;
 };
 
-export const startSession = async (spaceId: number, roundNumber?: number) => {
-  const { data } = await apiClient.post(`space/${spaceId}/start-session`, {
-    roundNumber: roundNumber || 1,
-  });
+export const getQuestionTypes = async () => {
+  const { data } = await apiClient.get(`question-type`);
+  return data as QuestionTypeResponse[];
+};
+
+export const startSession = async ({
+  spaceId,
+  userId,
+  questionTypeId,
+}: StartSessionRequest) => {
+  const { data } = await apiClient.post(
+    `space/${spaceId}/user/${userId}/start-session`,
+    {
+      questionTypeId: questionTypeId || 1,
+    }
+  );
   return data;
 };
 
