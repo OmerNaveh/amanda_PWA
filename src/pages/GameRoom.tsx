@@ -71,6 +71,16 @@ const GameRoom = () => {
     handleMessage,
   });
 
+  const resetAllStates = () => {
+    setSessionId(null);
+    setSelectedQuestionType(null);
+    setIsGameStarted(false);
+    setIsGameFinished(false);
+    setQuestion(null);
+    setResult(null);
+    setGameSummary(null);
+  };
+
   // Initial connection to PubNub and populate state
   useEffect(() => {
     if (!spaceData) {
@@ -120,6 +130,7 @@ const GameRoom = () => {
           gameSummary={gameSummary}
           userId={user?.id!}
           selectedQuestionType={selectedQuestionType}
+          resetAllStates={resetAllStates}
         />
       )}
     </div>

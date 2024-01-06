@@ -5,21 +5,21 @@ import { Button } from "components/ui/Button";
 import { User } from "models/user";
 import { startSession } from "services/apiClient";
 import CircularProgress from "components/ui/CircularProgress";
-import { useNavigate } from "react-router-dom";
 import { QuestionTypeResponse } from "models/responses";
 type props = {
   spaceId: number;
   userId: number;
   gameSummary: User[];
   selectedQuestionType: QuestionTypeResponse | null;
+  resetAllStates: () => void;
 };
 const GameResults = ({
   spaceId,
   gameSummary,
   userId,
   selectedQuestionType,
+  resetAllStates,
 }: props) => {
-  const navigate = useNavigate();
   const { mutate, isLoading } = useMutation(
     () =>
       startSession({
@@ -33,15 +33,18 @@ const GameResults = ({
     mutate();
   };
   const goBack = () => {
-    navigate("/");
+    resetAllStates();
   };
+  console.log(gameSummary);
   return (
     <div className="flex flex-col gap-4 h-full">
-      <h1 className="text-3xl font-bold text-center">Game Results</h1>
+      <h1 className="text-3xl font-bold text-center">
+        {"נו מי שתה הכי הרבה?"}
+      </h1>
       <div className="flex flex-col items-center gap-2">
         <Crown className="text-yellow-400 h-8 w-8" />
         <h3 className="text-xl font-semibold">
-          {gameSummary.length >= 2 ? "Winners" : "Winner"}:
+          {gameSummary.length >= 2 ? "צ׳אמפס" : "צ׳אמפ"}:
         </h3>
         <ul>
           {gameSummary.map((winner) => (
@@ -59,9 +62,9 @@ const GameResults = ({
       </div>
       <div className="mt-auto flex flex-col gap-4">
         <Button onClick={playNewGame}>
-          {isLoading ? <CircularProgress /> : "Play Again"}
+          {isLoading ? <CircularProgress /> : "עוד הפעם"}
         </Button>
-        <Button onClick={goBack}>Menu</Button>
+        <Button onClick={goBack}>{"נחזור נפרוס אופציות"}</Button>
       </div>
     </div>
   );

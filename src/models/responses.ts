@@ -6,10 +6,16 @@ export type CreateOrJoinSpaceResponse = {
   user: User;
 };
 
-export type QuestionTypeResponse = {
+export type QuestionType = {
   id: number;
   name: string;
   description: string;
   picture: string;
-  isSubscriptionBased: boolean;
+  isSubscriptionBased?: boolean;
+};
+
+export type QuestionTypeResponse = {
+  id: number;
+  name: string;
+  questionTypes: QuestionType[];
 };

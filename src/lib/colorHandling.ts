@@ -7,3 +7,8 @@ export const hexToRgb = (hex: string): string => {
 
   return `${r},${g},${b}`;
 };
+
+export const extractRGB = (color: string): string => {
+  const rgb = color.split(",");
+  return `${rgb[0]},${rgb[1]},${rgb[2]}`;
+};

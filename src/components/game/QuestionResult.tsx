@@ -42,7 +42,7 @@ const QuestionResult = ({
   return (
     <div className="flex flex-col gap-4 h-full">
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-4">Round Winner</h2>
+        <h2 className="text-2xl font-bold mb-4">{"והזוכה הגדול הוא היא הם"}</h2>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4 max-h-64 overflow-y-auto">
           {participents.map((participant, index) => (
             <div
@@ -62,7 +62,7 @@ const QuestionResult = ({
         {animationInProgress === false && (
           <div className="mt-6">
             <h3 className="text-xl font-semibold">
-              {result.length >= 2 ? "Winners" : "Winner"}:
+              {result.length >= 2 ? "הזוכים" : "הזוכה"}:
             </h3>
             <ul>
               {result.map((winner) => (
@@ -77,15 +77,15 @@ const QuestionResult = ({
                 </li>
               ))}
             </ul>
-            <h4 className="text-lg mt-4">It's your turn to drink</h4>
+            <h4 className="text-lg mt-4">{"תורך לשתות"}</h4>
           </div>
         )}
       </div>
       <div className="mt-auto flex flex-col gap-4">
         <Button onClick={showNextQuestion} disabled={loadingNextQuestion}>
-          {loadingNextQuestion ? <CircularProgress /> : "Next Question"}
+          {loadingNextQuestion ? <CircularProgress /> : "הלאה נקסט"}
         </Button>
-        <Button onClick={finishGame}>End Game</Button>
+        <Button onClick={finishGame}>{"סיים משחק"}</Button>
       </div>
     </div>
   );

@@ -3,16 +3,17 @@ import { useMutation } from "react-query";
 import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
 import { useToast } from "components/ui/useToast";
-import { hexToRgb } from "lib/colorHandling";
+import { extractRGB } from "lib/colorHandling";
 import { getErrorMessage } from "lib/errorHandling";
 import { CreateOrJoinSpaceRequest } from "models/requests";
 import { createSpace } from "services/apiClient";
 import { useNavigate } from "react-router-dom";
-import { HexColorPicker } from "react-colorful";
+import { Input } from "components/ui/input";
+import { COLORS } from "constants/colors";
 
 const HomePage = () => {
   const amandaIdRef = React.useRef<HTMLInputElement>(null);
-  const [color, setColor] = useState("#0080ff");
+  const [color, setColor] = useState<string | null>(null);
   const nicknameRef = React.useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const HomePage = () => {
       toast({ title: "Please fill out all fields", variant: "destructive" });
       return;
     }
-    mutate({ amandaId, name: nickname, color: hexToRgb(color) });
+    mutate({ amandaId, name: nickname, color: extractRGB(color) });
   };
 
   return (
@@ -50,21 +51,21 @@ const HomePage = () => {
       </h1>
       <form
         onSubmit={handleStartGame}
-        className="space-y-4 bg-gray-700 p-4 rounded-xl shadow-lg"
+        className="space-y-4 bg-ring/90 p-4 rounded-xl shadow-lg text-end"
       >
         <div>
           <label
             htmlFor="amandaId"
             className="block text-sm font-medium text-gray-300"
           >
-            Amanda ID
+            {"מזהה"}
           </label>
-          <input
+          <Input
             ref={amandaIdRef}
             type="text"
             id="amandaId"
-            className="mt-1 block w-full border-0 bg-gray-600 p-3 rounded-md text-white placeholder-gray-400 focus-visible:outline-none focus:ring-4 focus:ring-purple-600 focus:ring-opacity-50"
-            placeholder="Enter your Amanda ID"
+            className="mt-1 text-white placeholder-gray-400"
+            placeholder={"הכנס מזהה"}
           />
         </div>
 
@@ -73,13 +74,27 @@ const HomePage = () => {
             htmlFor="color"
             className="block text-sm font-medium text-gray-300"
           >
-            Choose Color
+            {"בחר צבע"}
           </label>
-          <HexColorPicker
-            color={color}
-            onChange={setColor}
-            className="mt-1 max-h-32"
-          />
+          <div dir="rtl" className="flex gap-4 overflow-x-auto px-2 py-4">
+            {Object.keys(COLORS).map((colorKey) => {
+              const colorSelection = COLORS[colorKey];
+              return (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  key={colorKey}
+                  onClick={() => setColor(colorSelection)}
+                  className={`flex-shrink-0 w-12 h-12 rounded-full cursor-pointer ${
+                    colorSelection === color
+                      ? "ring-2 ring-black ring-offset-2"
+                      : ""
+                  }`}
+                  style={{ backgroundColor: `rgb(${colorSelection})` }}
+                />
+              );
+            })}
+          </div>
         </div>
 
         <div>
@@ -87,19 +102,19 @@ const HomePage = () => {
             htmlFor="nickname"
             className="block text-sm font-medium text-gray-300"
           >
-            Nickname
+            {"בחר שם"}
           </label>
-          <input
+          <Input
             ref={nicknameRef}
             type="text"
             id="nickname"
-            className="mt-1 block w-full border-0 bg-gray-600 p-3 rounded-md text-white placeholder-gray-400 focus-visible:outline-none focus:ring-4 focus:ring-purple-600 focus:ring-opacity-50"
-            placeholder="Choose a nickname"
+            className="mt-1 text-white placeholder-gray-400"
+            placeholder={"הכנס שם"}
           />
         </div>
 
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? <CircularProgress /> : "Join"}
+          {isLoading ? <CircularProgress /> : <p>{"התחל"}</p>}
         </Button>
       </form>
     </div>

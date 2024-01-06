@@ -6,6 +6,6 @@ export const getErrorMessage = (err: any): string => {
   } else if (err?.message) {
     return err.message;
   } else {
-    return "Something went wrong";
+    return "אופס, משהו השתבש";
   }
 };

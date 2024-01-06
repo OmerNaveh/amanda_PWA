@@ -10,12 +10,12 @@ const QuestionBoard = ({ question, participents, selectAnswer }: props) => {
   return (
     <div className="flex flex-col gap-4 h-full">
       <div className="flex-shrink-0 flex flex-col gap-2">
-        <h2 className="text-2xl font-bold">Question</h2>
+        <h2 className="text-2xl font-bold">{"שאלה"}</h2>
         <p className="text-lg mb-2">{question.content}</p>
       </div>
 
       <div className="flex flex-col flex-grow min-h-0">
-        <h3 className="text-xl font-semibold mb-3">Select your answer:</h3>
+        <h3 className="text-xl font-semibold mb-3">{"בחר משתתף"}</h3>
         <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-4 overflow-y-auto min-h-0">
           {participents.map((participant) => (
             <button

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Question } from "models/game";
 import { User } from "models/user";
 import QuestionBoard from "./QuestionBoard";

@@ -33,7 +33,7 @@ export const updateSpace = async (spaceId: number, name: string) => {
 };
 
 export const getQuestionTypes = async () => {
-  const { data } = await apiClient.get(`question-type`);
+  const { data } = await apiClient.get(`category`);
   return data as QuestionTypeResponse[];
 };
 
