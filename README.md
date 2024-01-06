@@ -1,46 +1,44 @@
-# Getting Started with Create React App
+# Amanda - Light up the Night
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+**Amanda** is an interactive social game web application built using React and TypeScript. This Progressive Web App (PWA) is designed to make any night unforgettable by combining a digital gaming experience with an IoT (Internet of Things) device. The app enhances social gatherings with friends, creating lasting memories centered around fun and drinks.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Social Gaming Experience:** Amanda offers a game designed for social interactions, adding enjoyment and memorability to your night.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **IoT Integration:** The app connects seamlessly with an IoT device, featuring cool LED indicators that enhance the gaming experience.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- **LED Indicators:** Amanda uses vibrant LEDs to indicate round winners and participants who need to drink, based on the user-selected color for the game.
 
-### `npm test`
+- **Progressive Web App (PWA):** Amanda is built as a PWA, allowing users to install it on their devices for an app-like experience.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **React and TypeScript:** Leveraging the power of React and TypeScript, Amanda provides a dynamic user interface and enhanced code quality.
 
-### `npm run build`
+## Usage
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. **Register or Log In:**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   - Create an account or log in to start playing Amanda.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. **Connect IoT Device:**
 
-### `npm run eject`
+   - Follow the provided instructions to connect your IoT device to the app.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+3. **Invite Friends:**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   - Invite your friends to join the game and make the night unforgettable.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+4. **Play Amanda:**
+   - Engage in the interactive social game, follow the prompts, and enjoy the unique experiences triggered by the IoT device.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Contributing
 
-## Learn More
+Contributions to Amanda are welcome! If you have ideas for improvements or new features, feel free to submit a pull request.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Acknowledgements
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Special thanks to the developers and contributors who have helped make Amanda a fantastic social gaming experience.
+
+Enjoy Amanda and light up the night with your friends! 🌟🎉
