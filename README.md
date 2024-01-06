@@ -1,4 +1,4 @@
-# Amanda - Light up the Night
+# [Amanda - Light up the Night](https://amanda-pwa.vercel.app/)
 
 ## Overview
 
@@ -40,5 +40,9 @@ Contributions to Amanda are welcome! If you have ideas for improvements or new f
 ## Acknowledgements
 
 - Special thanks to the developers and contributors who have helped make Amanda a fantastic social gaming experience.
+
+## Visit Now
+
+[[Visit Now]](https://amanda-pwa.vercel.app/)
 
 Enjoy Amanda and light up the night with your friends! 🌟🎉
