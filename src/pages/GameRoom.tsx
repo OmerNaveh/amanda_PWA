@@ -69,6 +69,7 @@ const GameRoom = () => {
 
   const { connectToPubnub, handleDisconnectFromPubnub } = usePubnub({
     handleMessage,
+    userId: !!user?.id ? String(user.id) : "",
   });
 
   const resetAllStates = () => {

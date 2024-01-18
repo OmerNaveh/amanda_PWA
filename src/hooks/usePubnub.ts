@@ -1,23 +1,22 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Pubnub from "pubnub";
 
 type props = {
   handleMessage: ({ message }: Pubnub.MessageEvent) => void;
+  userId: string;
 };
 
 const { REACT_APP_PUBNUB_SUBSCRIBE_KEY } = process.env;
-const usePubnub = ({ handleMessage }: props) => {
-  const [messageEvent, setMessageEvent] = useState<any>(null);
+const usePubnub = ({ handleMessage, userId }: props) => {
   const pubnubClient = useRef<Pubnub | null>(null);
   const messageEventHandlerRef = useRef<any | null>(null);
-  const pubnubId = useId();
 
   // Initial pubnub setup
   useEffect(() => {
-    if (!REACT_APP_PUBNUB_SUBSCRIBE_KEY) return;
+    if (!REACT_APP_PUBNUB_SUBSCRIBE_KEY || !userId) return;
     pubnubClient.current = new Pubnub({
       subscribeKey: REACT_APP_PUBNUB_SUBSCRIBE_KEY!,
-      uuid: pubnubId,
+      uuid: userId,
     });
     if (messageEventHandlerRef.current) {
       pubnubClient.current.removeListener(messageEventHandlerRef.current);
@@ -30,7 +29,7 @@ const usePubnub = ({ handleMessage }: props) => {
       if (!pubnubClient.current) return;
       pubnubClient.current.removeListener(messageEventHandlerRef.current);
     };
-  }, []);
+  }, [userId]);
 
   const connectToPubnub = (channel: string | null) => {
     if (!channel || pubnubClient.current === null) return;
