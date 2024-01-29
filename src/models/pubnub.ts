@@ -5,6 +5,7 @@ import { User } from "./user";
 
 export enum PUBNUB_MESSAGE_TYPE {
   JOIN = "add-user",
+  LEAVE = "remove-user",
   UPDATE_SPACE = "update",
   START_GAME = "new-session",
   NEXT_QUESTION = "next-question",
@@ -13,6 +14,7 @@ export enum PUBNUB_MESSAGE_TYPE {
 }
 export type PUBNUB_MESSAGE =
   | { type: PUBNUB_MESSAGE_TYPE.JOIN; user: User }
+  | { type: PUBNUB_MESSAGE_TYPE.LEAVE; user: User }
   | { type: PUBNUB_MESSAGE_TYPE.UPDATE_SPACE; space: Space }
   | {
       type: PUBNUB_MESSAGE_TYPE.START_GAME;

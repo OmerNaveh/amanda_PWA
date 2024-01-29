@@ -53,6 +53,15 @@ const GameRoom = () => {
         setQuestion(pubnubData.question);
         setSelectedQuestionType(pubnubData.questionType);
         break;
+      case PUBNUB_MESSAGE_TYPE.LEAVE:
+        setParticipents((prev) => {
+          if (!prev.length) return prev;
+          if (pubnubData.user.id === user?.id) return prev;
+          return prev.filter(
+            (participent) => participent.id !== pubnubData.user.id
+          );
+        });
+        break;
       case PUBNUB_MESSAGE_TYPE.END_GAME:
         setQuestion(null);
         setResult(null);
