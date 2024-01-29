@@ -1,5 +1,12 @@
 import React, { useState } from "react";
 import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { ReactComponent as Amanda } from "assets/amanda.svg";
+import { ReactComponent as Person } from "assets/person.svg";
+import { ReactComponent as Paint } from "assets/paintpalette.svg";
+import { ReactComponent as TikTok } from "assets/TikTok.svg";
+import { ReactComponent as Youtube } from "assets/YouTube.svg";
+import { ReactComponent as Instagram } from "assets/Instagram.svg";
 import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
 import { useToast } from "components/ui/useToast";
@@ -7,13 +14,12 @@ import { extractRGB } from "lib/colorHandling";
 import { getErrorMessage } from "lib/errorHandling";
 import { CreateOrJoinSpaceRequest } from "models/requests";
 import { createSpace } from "services/apiClient";
-import { useNavigate } from "react-router-dom";
 import { Input } from "components/ui/input";
 import { COLORS } from "constants/colors";
 
 const HomePage = () => {
-  const amandaIdRef = React.useRef<HTMLInputElement>(null);
   const [color, setColor] = useState<string | null>(null);
+  const amandaIdRef = React.useRef<HTMLInputElement>(null);
   const nicknameRef = React.useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -45,78 +51,83 @@ const HomePage = () => {
   };
 
   return (
-    <div className="page-height flex flex-col w-full mx-auto max-w-md p-4 gap-4">
-      <h1 className="text-4xl font-bold text-white text-center">
-        Amanda - Light up the Night
-      </h1>
+    <div className="page-height flex flex-col w-full mx-auto max-w-md p-4">
       <form
+        dir="rtl"
         onSubmit={handleStartGame}
-        className="space-y-4 bg-ring/90 p-4 rounded-xl shadow-lg text-end"
+        className="bg-card border-[1.5px] border-card bg-blend-overlay px-4 py-8 rounded-2xl flex flex-col gap-8"
       >
-        <div>
-          <label
-            htmlFor="amandaId"
-            className="block text-sm font-medium text-gray-300"
-          >
-            {"מזהה"}
-          </label>
-          <Input
-            ref={amandaIdRef}
-            type="text"
-            id="amandaId"
-            className="mt-1 text-white placeholder-gray-400"
-            placeholder={"הכנס מזהה"}
-          />
+        <div className="flex items-center gap-4" dir="rtl">
+          <Amanda className="h-8 w-8" />
+          <Input ref={amandaIdRef} type="text" placeholder={"הכנס מזהה"} />
+        </div>
+        <div className="flex items-center gap-4" dir="rtl">
+          <Person className="h-8 w-8" />
+          <Input ref={nicknameRef} placeholder={"הכנס כינוי"} />
         </div>
 
         <div>
-          <label
-            htmlFor="color"
-            className="block text-sm font-medium text-gray-300"
-          >
+          <label htmlFor="color" className="block font-medium">
             {"בחר צבע"}
           </label>
-          <div dir="rtl" className="flex gap-4 overflow-x-auto px-2 py-4">
-            {Object.keys(COLORS).map((colorKey) => {
-              const colorSelection = COLORS[colorKey];
-              return (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  key={colorKey}
-                  onClick={() => setColor(colorSelection)}
-                  className={`flex-shrink-0 w-12 h-12 rounded-full cursor-pointer ${
-                    colorSelection === color
-                      ? "ring-2 ring-black ring-offset-2"
-                      : ""
-                  }`}
-                  style={{ backgroundColor: `rgb(${colorSelection})` }}
-                />
-              );
-            })}
+          <div className="flex items-center gap-4 ">
+            <Paint className="h-8 w-8 flex-shrink-0" />
+            <div dir="rtl" className="flex gap-4 overflow-x-auto px-2 py-4">
+              {Object.keys(COLORS).map((colorKey) => {
+                const colorSelection = COLORS[colorKey];
+                return (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    key={colorKey}
+                    onClick={() => setColor(colorSelection)}
+                    className={`flex-shrink-0 w-10 h-10 rounded-lg cursor-pointer ${
+                      colorSelection === color
+                        ? "ring-2 ring-black ring-offset-2"
+                        : ""
+                    }`}
+                    style={{ backgroundColor: `rgb(${colorSelection})` }}
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
 
-        <div>
-          <label
-            htmlFor="nickname"
-            className="block text-sm font-medium text-gray-300"
-          >
-            {"בחר שם"}
-          </label>
-          <Input
-            ref={nicknameRef}
-            type="text"
-            id="nickname"
-            className="mt-1 text-white placeholder-gray-400"
-            placeholder={"הכנס שם"}
-          />
-        </div>
-
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? <CircularProgress /> : <p>{"התחל"}</p>}
+          {isLoading ? <CircularProgress /> : <p>{"הצטרף"}</p>}
         </Button>
       </form>
+
+      <footer className="mt-auto text-center flex flex-col gap-2">
+        <p className="text-sm">{"עקבו אחרינו והצטרפו לטירוף"}</p>
+        <div className="flex justify-center gap-2 items-center">
+          <a
+            href="https://www.instagram.com/cheerswithamanda/"
+            target="_blank"
+            rel="noreferrer"
+            className="h-6 w-6 cursor-pointer active:opacity-50"
+          >
+            <TikTok className="h-6 w-6" />
+          </a>
+          <a
+            href="https://www.instagram.com/cheersapp/"
+            target="_blank"
+            rel="noreferrer"
+            className="h-6 w-6 cursor-pointer active:opacity-50"
+          >
+            <Instagram className="h-6 w-6" />
+          </a>
+          <a
+            href="https://www.instagram.com/cheersapp/"
+            target="_blank"
+            rel="noreferrer"
+            className="h-6 w-6 cursor-pointer active:opacity-50"
+          >
+            <Youtube className="h-6 w-6" />
+          </a>
+        </div>
+      </footer>
     </div>
   );
 };

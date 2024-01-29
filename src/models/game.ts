@@ -5,4 +5,5 @@ export type Question = {
 
 export type Session = {
   id: number;
+  adminId: number;
 };

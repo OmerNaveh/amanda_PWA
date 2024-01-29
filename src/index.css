@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    --background: rgb(20, 20, 20);
-    --foreground: rgb(255, 255, 255);
+    --background: #211134;
+    --foreground: #fff;
 
     --muted: 223 47% 11%;
     --muted-foreground: 215.4 16.3% 56.9%;
@@ -19,14 +19,14 @@
     --border: 216 34% 17%;
     --input: 216 34% 17%;
 
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
+    --card: rgba(255, 255, 255, 0.1);
+    --card-foreground: rgba(255, 255, 255, 0.3);
 
-    --primary: rgb(190, 82, 255);
+    --primary: #34c685;
     --primary-foreground: 222.2 47.4% 1.2%;
     --primary-text: rgb(210, 210, 210);
 
-    --secondary: rgb(64, 224, 208);
+    --secondary: #fa6d5e;
     --secondary-foreground: 210 40% 98%;
 
     --destructive: 0 63% 31%;
@@ -62,7 +62,10 @@
 }
 
 .page-height {
-  height: calc(100% - 4rem);
+  height: calc(100% - 7rem);
+}
+.game-page-height {
+  height: calc(100% - 10rem);
 }
 
 input:-webkit-autofill,
@@ -85,4 +88,17 @@ span,
 button,
 textarea {
   direction: rtl;
+}
+
+img {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  -webkit-touch-callout: none;
 }

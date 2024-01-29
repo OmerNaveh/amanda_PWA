@@ -1,5 +1,5 @@
 import React from "react";
-import { Question } from "models/game";
+import { Question, Session } from "models/game";
 import { User } from "models/user";
 import QuestionBoard from "./QuestionBoard";
 import { useMutation } from "react-query";
@@ -11,7 +11,7 @@ import {
 } from "services/apiClient";
 import { useToast } from "components/ui/useToast";
 import { getErrorMessage } from "lib/errorHandling";
-import Loader from "./Loader";
+import Loader from "./WaitForEveryoneToAnswer";
 import QuestionResult from "./QuestionResult";
 
 type props = {
@@ -19,47 +19,51 @@ type props = {
   participents: User[];
   question: Question;
   result: User[] | null;
-  sessionId: number;
+  session: Session;
   showLoader: boolean;
   setShowLoader: React.Dispatch<React.SetStateAction<boolean>>;
+  currentAnswerSelection: User | null;
+  setCurrentAnswerSelection: React.Dispatch<React.SetStateAction<User | null>>;
 };
 const PlayTime = ({
   user,
   participents,
   question,
   result,
-  sessionId,
+  session,
   showLoader,
   setShowLoader,
+  currentAnswerSelection,
+  setCurrentAnswerSelection,
 }: props) => {
   const { toast } = useToast();
-  const { mutate: TriggerSelectingAnswer } = useMutation(
-    (selection: User) =>
-      answerQuestion(sessionId, user.id, question.id, selection.id),
-    {
-      onSuccess: () => {
-        setShowLoader(true);
-      },
-      onError: (err) => {
-        toast({ title: getErrorMessage(err), variant: "destructive" });
-      },
-    }
-  );
-  const { mutate: TriggerShowResult } = useMutation(
-    () => getQuestionResult(sessionId, question.id),
-    {
-      onError: (err) => {
-        toast({ title: getErrorMessage(err), variant: "destructive" });
-      },
-    }
-  );
-  const { mutate: TriggerNextQuestion, isLoading: loadingNextQuestion } =
-    useMutation(() => getNextQuestion(sessionId), {
+  const { mutate: TriggerSelectingAnswer, isLoading: loadingAnswerSelection } =
+    useMutation(
+      (selection: User) =>
+        answerQuestion(session.id, user.id, question.id, selection.id),
+      {
+        onSuccess: (data, selection) => {
+          setCurrentAnswerSelection(selection);
+          setShowLoader(true);
+        },
+        onError: (err) => {
+          toast({ title: getErrorMessage(err), variant: "destructive" });
+        },
+      }
+    );
+  const { mutate: TriggerShowResult, isLoading: showAnswerResultLoading } =
+    useMutation(() => getQuestionResult(session.id, question.id), {
       onError: (err) => {
         toast({ title: getErrorMessage(err), variant: "destructive" });
       },
     });
-  const { mutate: TriggerEndingGame } = useMutation(() => endGame(sessionId), {
+  const { mutate: TriggerNextQuestion, isLoading: loadingNextQuestion } =
+    useMutation(() => getNextQuestion(session.id), {
+      onError: (err) => {
+        toast({ title: getErrorMessage(err), variant: "destructive" });
+      },
+    });
+  const { mutate: TriggerEndingGame } = useMutation(() => endGame(session.id), {
     onError: (err) => {
       toast({ title: getErrorMessage(err), variant: "destructive" });
     },
@@ -83,9 +87,17 @@ const PlayTime = ({
           question={question}
           participents={participents}
           selectAnswer={selectAnswer}
+          isLoading={loadingAnswerSelection}
         />
       )}
-      {!!showLoader && <Loader showResult={showResult} />}
+      {!!showLoader && (
+        <Loader
+          isLoading={showAnswerResultLoading}
+          showResult={showResult}
+          isAdmin={String(session.adminId) === String(user.id)}
+          currentAnswerSelection={currentAnswerSelection}
+        />
+      )}
       {!!result && (
         <QuestionResult
           participents={participents}
@@ -93,6 +105,7 @@ const PlayTime = ({
           showNextQuestion={nextQuestion}
           loadingNextQuestion={loadingNextQuestion}
           finishGame={finishGame}
+          isAdmin={String(session.adminId) === String(user.id)}
         />
       )}
     </>

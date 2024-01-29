@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-white text-center rounded-lg active:opacity-60 disabled:opacity-60",
+          "bg-primary text-white text-center shadow-custom rounded-lg active:opacity-60 disabled:opacity-60",
         outline:
           "border border-primary bg-transparent text-primary rounded-lg active:opacity-60 disabled:opacity-60",
         underline:

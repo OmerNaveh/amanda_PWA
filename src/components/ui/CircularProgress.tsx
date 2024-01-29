@@ -1,11 +1,12 @@
 import { cn } from "lib/utils";
 
 type props = {
+  wrapperClassName?: string;
   className?: string;
 };
-const CircularProgress = ({ className }: props) => {
+const CircularProgress = ({ wrapperClassName, className }: props) => {
   return (
-    <div className="flex justify-center items-center">
+    <div className={cn("flex justify-center items-center", wrapperClassName)}>
       <svg
         className={cn("animate-spin h-6 w-6 text-white", className)}
         viewBox="0 0 50 50"

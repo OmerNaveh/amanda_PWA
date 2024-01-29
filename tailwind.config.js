@@ -44,14 +44,17 @@ module.exports = {
           foreground: "hsl(var(--popover-foreground))",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "var(--card)",
+          foreground: "var(--card-foreground)",
         },
       },
       borderRadius: {
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        custom: "0px 4px 4px 0px rgba(0, 0, 0, 0.50)",
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],

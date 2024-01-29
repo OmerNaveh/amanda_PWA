@@ -26,11 +26,14 @@ const BottomSheet = ({
     >
       <SheetContent
         overlayClassName={cn(
-          "bg-black/60 backdrop-blur-none",
+          "bg-transparent backdrop-blur-none",
           overlayClassName
         )}
         side="bottom"
-        className={cn("w-full bg-background flex flex-col p-4", className)}
+        className={cn(
+          "w-full backdrop-blur-lg bg-card flex flex-col px-4 pt-2 pb-4 gap-0 shadow-none border-none outline-none",
+          className
+        )}
       >
         {children}
       </SheetContent>

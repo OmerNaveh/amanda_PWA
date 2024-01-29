@@ -1,4 +1,3 @@
-import React from "react";
 import { Crown } from "lucide-react";
 import { useMutation } from "react-query";
 import { Button } from "components/ui/Button";

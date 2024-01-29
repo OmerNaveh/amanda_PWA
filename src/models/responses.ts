@@ -17,5 +17,6 @@ export type QuestionType = {
 export type QuestionTypeResponse = {
   id: number;
   name: string;
+  picture: string;
   questionTypes: QuestionType[];
 };
