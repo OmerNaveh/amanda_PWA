@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import confetti from "canvas-confetti";
 import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
 import { User } from "models/user";
@@ -14,6 +15,9 @@ type props = {
   isAdmin: boolean;
 };
 
+const TOTAL_ANIMATION_DURATION = 5000;
+const CYCLE_INTERVAL = 300;
+
 const QuestionResult = ({
   participents,
   result,
@@ -24,23 +28,49 @@ const QuestionResult = ({
 }: props) => {
   const [currentHighlight, setCurrentHighlight] = useState<number>(0);
   const [animationInProgress, setAnimationInProgress] = useState<boolean>(true);
-
+  const showFireworks = () => {
+    const colors = ["#FFFFFF", "#211134", "#97A9F6"];
+    confetti({
+      particleCount: 50,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 },
+      colors: colors,
+    });
+    confetti({
+      particleCount: 50,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 },
+      colors: colors,
+    });
+  };
   useEffect(() => {
-    if (!animationInProgress) {
+    if (!animationInProgress || participents.length <= 1) {
+      showFireworks();
       return;
     }
-    const winnerIds = result.map((winner) => winner.id);
-    const timeout = setTimeout(() => {
-      // Increment the highlight index
+
+    const cycleTimeout = setInterval(() => {
       const nextHighlight = (currentHighlight + 1) % participents.length;
       setCurrentHighlight(nextHighlight);
-      // Check if conditions are met to stop the animation
-      if (winnerIds.includes(participents[nextHighlight].id)) {
-        setAnimationInProgress(false);
-      }
-    }, 200); // Adjust time for faster or slower cycling
+    }, CYCLE_INTERVAL);
 
-    return () => clearTimeout(timeout);
+    const stopAnimationTimeout = setTimeout(() => {
+      clearInterval(cycleTimeout);
+      setAnimationInProgress(false);
+
+      // Set the highlight to the winner
+      const winnerId = result[0].id;
+      const winnerIndex = participents.findIndex((p) => p.id === winnerId);
+      setCurrentHighlight(winnerIndex);
+      showFireworks();
+    }, TOTAL_ANIMATION_DURATION);
+
+    return () => {
+      clearInterval(cycleTimeout);
+      clearTimeout(stopAnimationTimeout);
+    };
   }, [currentHighlight, participents, result, animationInProgress]);
 
   const renderAdminButtons = () => {
