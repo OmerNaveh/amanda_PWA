@@ -7,7 +7,7 @@ import React, { useRef } from "react";
 type props = {
   questionType: QuestionType;
   isLoading: boolean;
-  onClick: (id: number) => void;
+  onClick: (gameType: QuestionType) => void;
 };
 const QuestionTypeCard = ({ questionType, isLoading, onClick }: props) => {
   const cardRef = useRef(null);
@@ -19,7 +19,7 @@ const QuestionTypeCard = ({ questionType, isLoading, onClick }: props) => {
     <div
       ref={cardRef}
       key={questionType.id}
-      className="h-full aspect-square flex flex-col bg-card rounded-lg p-2 gap-2 border-2 border-card snap-center"
+      className="h-full w-[90%] shrink-0 flex flex-col bg-card rounded-lg p-2 gap-2 border-2 border-card snap-center"
     >
       <div className="relative h-[40%] w-full">
         <img
@@ -38,7 +38,7 @@ const QuestionTypeCard = ({ questionType, isLoading, onClick }: props) => {
       <Button
         disabled={isLoading || !!questionType?.isSubscriptionBased}
         onClick={() => {
-          onClick(questionType.id);
+          onClick(questionType);
         }}
         className={`mt-auto transition-opacity duration-500 ${
           isVisible ? "opacity-100" : "opacity-0 pointer-events-none"

@@ -1,15 +1,24 @@
+import { useRef } from "react";
+import { Crown } from "lucide-react";
 import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
 import useIntersectionObserver from "hooks/useIntersectionObserver";
 import { User } from "models/user";
-import { useRef } from "react";
 
 type props = {
   user: User;
   onClick?: (User: User) => void;
+  isGameSummmary?: boolean;
+  isWinner?: boolean;
   isLoading?: boolean;
 };
-const UserSlider = ({ user, onClick, isLoading }: props) => {
+const UserSlider = ({
+  user,
+  onClick,
+  isLoading,
+  isGameSummmary,
+  isWinner,
+}: props) => {
   const cardRef = useRef(null);
   const isVisible = useIntersectionObserver(cardRef, {
     root: null, // Observe intersection relative to the viewport
@@ -30,7 +39,16 @@ const UserSlider = ({ user, onClick, isLoading }: props) => {
           {user.name}
         </h5>
       </div>
-
+      {isGameSummmary && (
+        <div dir="rtl" className="mt-auto flex flex-col gap-1">
+          {isWinner && (
+            <div className="flex justify-center">
+              <Crown className="h-4 w-4" />
+            </div>
+          )}
+          <p> {user?.score || 0} נק׳</p>
+        </div>
+      )}
       {!!onClick && (
         <Button
           disabled={isLoading}
@@ -44,9 +62,7 @@ const UserSlider = ({ user, onClick, isLoading }: props) => {
           {isLoading ? (
             <CircularProgress />
           ) : (
-            <p className="text-xl font-semibold text-center tracking-wider">
-              {"בחר"}
-            </p>
+            <p className="font-semibold text-center tracking-wider">{"בחר"}</p>
           )}
         </Button>
       )}

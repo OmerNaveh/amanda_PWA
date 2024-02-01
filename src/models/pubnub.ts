@@ -1,5 +1,5 @@
 import { Question, Session } from "./game";
-import { QuestionTypeResponse } from "./responses";
+import { QuestionType } from "./responses";
 import { Space } from "./space";
 import { User } from "./user";
 
@@ -19,7 +19,7 @@ export type PUBNUB_MESSAGE =
   | {
       type: PUBNUB_MESSAGE_TYPE.START_GAME;
       question: Question;
-      questionType: QuestionTypeResponse;
+      questionType: QuestionType;
       session: Session;
     }
   | { type: PUBNUB_MESSAGE_TYPE.NEXT_QUESTION; question: Question }

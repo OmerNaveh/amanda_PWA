@@ -1,33 +1,27 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import QuestionTypeCard from "./QuestionTypeCard";
-import { QuestionTypeResponse } from "models/responses";
+import { QuestionType, QuestionTypeResponse } from "models/responses";
 import useCenteredCard from "hooks/useCenteredCard";
 
 type props = {
   questionTypes: QuestionTypeResponse[];
-  selectedCategory: number | null;
-  setSelectedCategory: React.Dispatch<React.SetStateAction<number | null>>;
   isLoading: boolean;
-  startGame: (questionTypeId?: number) => void;
+  startGame: (gameType: QuestionType) => void;
 };
-const CategorySlider = ({
-  questionTypes,
-  selectedCategory,
-  setSelectedCategory,
-  isLoading,
-  startGame,
-}: props) => {
+const CategorySlider = ({ questionTypes, isLoading, startGame }: props) => {
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(0);
   const centeredIndex = useCenteredCard(".cat-slider", questionTypes.length);
   useEffect(() => {
     if (centeredIndex !== null) {
       setSelectedCategory(centeredIndex);
     }
   }, [centeredIndex, setSelectedCategory]);
+
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
       <div
         dir="rtl"
-        className="cat-slider flex gap-2 items-center snap-x snap-mandatory overflow-x-auto h-[40%] py-2 flex-shrink-0"
+        className="cat-slider flex gap-2 items-center snap-x snap-mandatory overflow-x-auto h-[40%] pb-2 flex-shrink-0"
       >
         {questionTypes.map((category, index) => {
           return (
@@ -38,7 +32,7 @@ const CategorySlider = ({
                   ? "border-foreground"
                   : "border-card "
               }
-            border-2 backdrop-blur-2xl rounded-lg h-full aspect-video relative snap-center
+            border-2 backdrop-blur-2xl rounded-lg h-full w-[90%] shrink-0  relative snap-center
             `}
             >
               <img
@@ -56,7 +50,7 @@ const CategorySlider = ({
 
       <div
         dir="rtl"
-        className="flex gap-2 items-center snap-x snap-mandatory overflow-x-auto h-[60%] w-full py-2 flex-shrink-0"
+        className="flex gap-2 items-center snap-x snap-mandatory overflow-x-auto overflow-y-hidden h-[60%] w-full pb-2 flex-shrink-0"
       >
         {selectedCategory !== null &&
           questionTypes[selectedCategory].questionTypes.map((questionType) => {

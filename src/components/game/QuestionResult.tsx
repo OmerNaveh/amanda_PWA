@@ -5,6 +5,7 @@ import CircularProgress from "components/ui/CircularProgress";
 import { User } from "models/user";
 import QuestionCard from "./QuestionCard";
 import UserSlider from "./UserSlider";
+import { TOTAL_QUESTIONS } from "constants/gameRules";
 
 type props = {
   participents: User[];
@@ -12,7 +13,9 @@ type props = {
   showNextQuestion: () => void;
   loadingNextQuestion: boolean;
   finishGame: () => void;
+  loadingFinishGame: boolean;
   isAdmin: boolean;
+  questionCounter: number;
 };
 
 const TOTAL_ANIMATION_DURATION = 5000;
@@ -24,7 +27,9 @@ const QuestionResult = ({
   showNextQuestion,
   loadingNextQuestion,
   finishGame,
+  loadingFinishGame,
   isAdmin,
+  questionCounter,
 }: props) => {
   const [currentHighlight, setCurrentHighlight] = useState<number>(0);
   const [animationInProgress, setAnimationInProgress] = useState<boolean>(true);
@@ -52,31 +57,38 @@ const QuestionResult = ({
     }
 
     const cycleTimeout = setInterval(() => {
-      const nextHighlight = (currentHighlight + 1) % participents.length;
-      setCurrentHighlight(nextHighlight);
+      setCurrentHighlight(
+        (prevHighlight) => (prevHighlight + 1) % participents.length
+      );
     }, CYCLE_INTERVAL);
 
     const stopAnimationTimeout = setTimeout(() => {
       clearInterval(cycleTimeout);
-      setAnimationInProgress(false);
 
       // Set the highlight to the winner
       const winnerId = result[0].id;
       const winnerIndex = participents.findIndex((p) => p.id === winnerId);
       setCurrentHighlight(winnerIndex);
+
+      setAnimationInProgress(false);
       showFireworks();
     }, TOTAL_ANIMATION_DURATION);
 
     return () => {
       clearInterval(cycleTimeout);
       clearTimeout(stopAnimationTimeout);
+      setCurrentHighlight(0);
     };
-  }, [currentHighlight, participents, result, animationInProgress]);
+  }, [participents, result, animationInProgress]);
 
   const renderAdminButtons = () => {
-    return (
+    return questionCounter === TOTAL_QUESTIONS ? (
+      <Button onClick={finishGame} disabled={loadingFinishGame}>
+        {loadingFinishGame ? <CircularProgress /> : "לתוצאות"}
+      </Button>
+    ) : (
       <Button onClick={showNextQuestion} disabled={loadingNextQuestion}>
-        {loadingNextQuestion ? <CircularProgress /> : "הלאה נקסט"}
+        {loadingNextQuestion ? <CircularProgress /> : "לשאלה הבאה"}
       </Button>
     );
   };
@@ -88,7 +100,7 @@ const QuestionResult = ({
       />
       <div
         dir="rtl"
-        className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[60%] w-full py-2 flex-shrink-0"
+        className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full py-2 flex-shrink-0"
       >
         <UserSlider user={participents[currentHighlight]} />
       </div>

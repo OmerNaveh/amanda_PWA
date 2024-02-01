@@ -46,3 +46,12 @@ const Background: React.FC = () => {
     </div>
   );
 };
+
+export const Fallback = () => {
+  return (
+    <>
+      <Background />
+      <Header />
+    </>
+  );
+};

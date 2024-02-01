@@ -16,11 +16,16 @@ import { CreateOrJoinSpaceRequest } from "models/requests";
 import { createSpace } from "services/apiClient";
 import { Input } from "components/ui/input";
 import { COLORS } from "constants/colors";
+import { useGameContext } from "context/GameContext";
+import { useAuthContext } from "context/AuthContext";
 
 const HomePage = () => {
   const [color, setColor] = useState<string | null>(null);
   const amandaIdRef = React.useRef<HTMLInputElement>(null);
   const nicknameRef = React.useRef<HTMLInputElement>(null);
+
+  const { setSpace, setParticipents } = useGameContext();
+  const { setUser } = useAuthContext();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -30,7 +35,10 @@ const HomePage = () => {
     {
       onSuccess: (data) => {
         console.log(data);
-        navigate("/game", { state: { spaceData: data } });
+        setSpace(data.space);
+        setParticipents(data.space.users);
+        setUser(data.user);
+        navigate("/game");
       },
       onError: (error) => {
         const message = getErrorMessage(error);
@@ -111,7 +119,7 @@ const HomePage = () => {
             <TikTok className="h-6 w-6" />
           </a>
           <a
-            href="https://www.instagram.com/cheersapp/"
+            href="https://www.instagram.com/cheerswithamanda/"
             target="_blank"
             rel="noreferrer"
             className="h-6 w-6 cursor-pointer active:opacity-50"
@@ -119,7 +127,7 @@ const HomePage = () => {
             <Instagram className="h-6 w-6" />
           </a>
           <a
-            href="https://www.instagram.com/cheersapp/"
+            href="https://www.instagram.com/cheerswithamanda/"
             target="_blank"
             rel="noreferrer"
             className="h-6 w-6 cursor-pointer active:opacity-50"

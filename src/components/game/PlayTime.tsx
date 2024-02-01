@@ -1,11 +1,10 @@
-import React from "react";
-import { Question, Session } from "models/game";
+import { useState } from "react";
+import { useMutation } from "react-query";
+import { GAME_STATUS, Question } from "models/game";
 import { User } from "models/user";
 import QuestionBoard from "./QuestionBoard";
-import { useMutation } from "react-query";
 import {
   answerQuestion,
-  endGame,
   getNextQuestion,
   getQuestionResult,
 } from "services/apiClient";
@@ -13,38 +12,35 @@ import { useToast } from "components/ui/useToast";
 import { getErrorMessage } from "lib/errorHandling";
 import Loader from "./WaitForEveryoneToAnswer";
 import QuestionResult from "./QuestionResult";
+import { useAuthContext } from "context/AuthContext";
+import { useGameContext } from "context/GameContext";
 
 type props = {
-  user: User;
-  participents: User[];
   question: Question;
   result: User[] | null;
-  session: Session;
-  showLoader: boolean;
-  setShowLoader: React.Dispatch<React.SetStateAction<boolean>>;
-  currentAnswerSelection: User | null;
-  setCurrentAnswerSelection: React.Dispatch<React.SetStateAction<User | null>>;
+  finishGame: () => void;
+  loadingFinishGame: boolean;
 };
 const PlayTime = ({
-  user,
-  participents,
   question,
   result,
-  session,
-  showLoader,
-  setShowLoader,
-  currentAnswerSelection,
-  setCurrentAnswerSelection,
+  finishGame,
+  loadingFinishGame,
 }: props) => {
+  const [currentAnswerSelection, setCurrentAnswerSelection] =
+    useState<User | null>(null);
+  const { user } = useAuthContext();
+  const { session, participents, gameStatus, setGameStatus, questionCounter } =
+    useGameContext();
   const { toast } = useToast();
   const { mutate: TriggerSelectingAnswer, isLoading: loadingAnswerSelection } =
     useMutation(
       (selection: User) =>
-        answerQuestion(session.id, user.id, question.id, selection.id),
+        answerQuestion(session!.id, user!.id, question.id, selection.id),
       {
         onSuccess: (data, selection) => {
           setCurrentAnswerSelection(selection);
-          setShowLoader(true);
+          setGameStatus(GAME_STATUS.WAITING_FOR_ANSWERS);
         },
         onError: (err) => {
           toast({ title: getErrorMessage(err), variant: "destructive" });
@@ -52,22 +48,18 @@ const PlayTime = ({
       }
     );
   const { mutate: TriggerShowResult, isLoading: showAnswerResultLoading } =
-    useMutation(() => getQuestionResult(session.id, question.id), {
+    useMutation(() => getQuestionResult(session!.id, question.id), {
       onError: (err) => {
         toast({ title: getErrorMessage(err), variant: "destructive" });
       },
     });
   const { mutate: TriggerNextQuestion, isLoading: loadingNextQuestion } =
-    useMutation(() => getNextQuestion(session.id), {
+    useMutation(() => getNextQuestion(session!.id), {
       onError: (err) => {
         toast({ title: getErrorMessage(err), variant: "destructive" });
       },
     });
-  const { mutate: TriggerEndingGame } = useMutation(() => endGame(session.id), {
-    onError: (err) => {
-      toast({ title: getErrorMessage(err), variant: "destructive" });
-    },
-  });
+
   const selectAnswer = (answer: User) => {
     TriggerSelectingAnswer(answer);
   };
@@ -77,20 +69,19 @@ const PlayTime = ({
   const nextQuestion = () => {
     TriggerNextQuestion();
   };
-  const finishGame = () => {
-    TriggerEndingGame();
-  };
+
+  if (!session || !user) return null;
   return (
     <>
-      {!!question && !result && !showLoader && (
+      {gameStatus === GAME_STATUS.SHOWING_QUESTION && !!question && !result && (
         <QuestionBoard
           question={question}
-          participents={participents}
           selectAnswer={selectAnswer}
           isLoading={loadingAnswerSelection}
+          showResult={showResult}
         />
       )}
-      {!!showLoader && (
+      {gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS && (
         <Loader
           isLoading={showAnswerResultLoading}
           showResult={showResult}
@@ -105,7 +96,9 @@ const PlayTime = ({
           showNextQuestion={nextQuestion}
           loadingNextQuestion={loadingNextQuestion}
           finishGame={finishGame}
+          loadingFinishGame={loadingFinishGame}
           isAdmin={String(session.adminId) === String(user.id)}
+          questionCounter={questionCounter}
         />
       )}
     </>

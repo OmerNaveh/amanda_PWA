@@ -1,20 +1,26 @@
 import { useMemo, useState } from "react";
 import BottomSheet from "components/ui/BottomSheet";
 import { Button } from "components/ui/Button";
-import { User } from "models/user";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "context/AuthContext";
+import { useGameContext } from "context/GameContext";
+import { GAME_STATUS } from "models/game";
+import CircularProgress from "components/ui/CircularProgress";
 
 type props = {
-  participents: User[];
-  user: User | null;
-  hasGameStarted: boolean;
+  finishGame: () => void;
+  loadingFinishGame: boolean;
+  resetGame: () => void;
 };
 const ParticipentsBottomSheet = ({
-  participents,
-  hasGameStarted,
-  user,
+  finishGame,
+  loadingFinishGame,
+  resetGame,
 }: props) => {
   const [open, setOpen] = useState<boolean>(false);
+  const { user } = useAuthContext();
+  const { participents, gameStatus, session } = useGameContext();
+
   const navigate = useNavigate();
   const sortedParticipents = useMemo(
     () =>
@@ -26,6 +32,7 @@ const ParticipentsBottomSheet = ({
     [participents, user]
   );
   const handleExitGame = () => {
+    resetGame();
     navigate("/");
   };
   return (
@@ -38,8 +45,8 @@ const ParticipentsBottomSheet = ({
           className="h-full w-full bg-black/30 rounded-t-2xl shadow backdrop-blur text-center flex flex-col pt-2 active:opacity-60 cursor-pointer"
         >
           <div className="bg-white/10 rounded-full w-[calc(100%-8rem)] h-2 self-center" />
-          <h4 className="w-full font-bold my-auto text-base">
-            {!hasGameStarted
+          <h4 dir="rtl" className="w-full font-bold my-auto text-base">
+            {gameStatus !== GAME_STATUS.PRE_GAME
               ? `${participents.length} אנשים מוכנים לשחק`
               : `${participents.length} אנשים במשחק`}
           </h4>
@@ -54,8 +61,8 @@ const ParticipentsBottomSheet = ({
         className="page-height rounded-t-2xl gap-2"
       >
         <div className="bg-white/10 rounded-full w-[calc(100%-8rem)] h-2 self-center" />
-        <h4 className="w-full font-bold text-center text-base">
-          {!hasGameStarted
+        <h4 dir="rtl" className="w-full font-bold text-center text-base">
+          {gameStatus === GAME_STATUS.PRE_GAME
             ? `${participents.length} אנשים מוכנים לשחק`
             : `${participents.length} אנשים במשחק`}
         </h4>
@@ -81,7 +88,16 @@ const ParticipentsBottomSheet = ({
           ))}
         </div>
 
-        <div className="mt-auto flex flex-col shrink-0">
+        <div className="mt-auto flex flex-col gap-2 shrink-0">
+          {String(user!.id) === String(session?.adminId) && (
+            <Button onClick={finishGame} disabled={!!loadingFinishGame}>
+              {!!loadingFinishGame ? (
+                <CircularProgress />
+              ) : (
+                <p>{"סיים משחק"}</p>
+              )}
+            </Button>
+          )}
           <Button onClick={handleExitGame} className="bg-secondary">
             {"צא מהמשחק"}
           </Button>

@@ -32,7 +32,7 @@ const Loader = ({
       {!!currentAnswerSelection && (
         <div
           dir="rtl"
-          className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[60%] w-full py-2 flex-shrink-0"
+          className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full py-2 flex-shrink-0"
         >
           <UserSlider user={currentAnswerSelection} />
         </div>
