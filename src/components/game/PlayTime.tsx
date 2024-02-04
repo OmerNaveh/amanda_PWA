@@ -1,19 +1,13 @@
-import { useState } from "react";
 import { useMutation } from "react-query";
-import { GAME_STATUS, Question } from "models/game";
+import { Question } from "models/game";
 import { User } from "models/user";
-import QuestionBoard from "./QuestionBoard";
-import {
-  answerQuestion,
-  getNextQuestion,
-  getQuestionResult,
-} from "services/apiClient";
+import { getNextQuestion } from "services/apiClient";
 import { useToast } from "components/ui/useToast";
-import { getErrorMessage } from "lib/errorHandling";
-import Loader from "./WaitForEveryoneToAnswer";
-import QuestionResult from "./QuestionResult";
 import { useAuthContext } from "context/AuthContext";
 import { useGameContext } from "context/GameContext";
+import { getErrorMessage } from "lib/errorHandling";
+import QuestionBoard from "./QuestionBoard";
+import QuestionResult from "./QuestionResult";
 
 type props = {
   question: Question;
@@ -27,32 +21,10 @@ const PlayTime = ({
   finishGame,
   loadingFinishGame,
 }: props) => {
-  const [currentAnswerSelection, setCurrentAnswerSelection] =
-    useState<User | null>(null);
   const { user } = useAuthContext();
-  const { session, participents, gameStatus, setGameStatus, questionCounter } =
-    useGameContext();
+  const { session, participents, questionCounter } = useGameContext();
   const { toast } = useToast();
-  const { mutate: TriggerSelectingAnswer, isLoading: loadingAnswerSelection } =
-    useMutation(
-      (selection: User) =>
-        answerQuestion(session!.id, user!.id, question.id, selection.id),
-      {
-        onSuccess: (data, selection) => {
-          setCurrentAnswerSelection(selection);
-          setGameStatus(GAME_STATUS.WAITING_FOR_ANSWERS);
-        },
-        onError: (err) => {
-          toast({ title: getErrorMessage(err), variant: "destructive" });
-        },
-      }
-    );
-  const { mutate: TriggerShowResult, isLoading: showAnswerResultLoading } =
-    useMutation(() => getQuestionResult(session!.id, question.id), {
-      onError: (err) => {
-        toast({ title: getErrorMessage(err), variant: "destructive" });
-      },
-    });
+
   const { mutate: TriggerNextQuestion, isLoading: loadingNextQuestion } =
     useMutation(() => getNextQuestion(session!.id), {
       onError: (err) => {
@@ -60,12 +32,6 @@ const PlayTime = ({
       },
     });
 
-  const selectAnswer = (answer: User) => {
-    TriggerSelectingAnswer(answer);
-  };
-  const showResult = () => {
-    TriggerShowResult();
-  };
   const nextQuestion = () => {
     TriggerNextQuestion();
   };
@@ -73,23 +39,9 @@ const PlayTime = ({
   if (!session || !user) return null;
   return (
     <>
-      {gameStatus === GAME_STATUS.SHOWING_QUESTION && !!question && !result && (
-        <QuestionBoard
-          question={question}
-          selectAnswer={selectAnswer}
-          isLoading={loadingAnswerSelection}
-          showResult={showResult}
-        />
-      )}
-      {gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS && (
-        <Loader
-          isLoading={showAnswerResultLoading}
-          showResult={showResult}
-          isAdmin={String(session.adminId) === String(user.id)}
-          currentAnswerSelection={currentAnswerSelection}
-        />
-      )}
-      {!!result && (
+      {!result ? (
+        <QuestionBoard question={question} />
+      ) : (
         <QuestionResult
           participents={participents}
           result={result}

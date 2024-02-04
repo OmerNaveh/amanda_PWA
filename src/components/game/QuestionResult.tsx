@@ -104,10 +104,6 @@ const QuestionResult = ({
       >
         <UserSlider user={participents[currentHighlight]} />
       </div>
-
-      {/* <div className="mt-auto flex flex-col gap-4">
-        <Button onClick={finishGame}>{"סיים משחק"}</Button>
-      </div> */}
     </div>
   );
 };
