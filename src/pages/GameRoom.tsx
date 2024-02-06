@@ -82,6 +82,9 @@ const GameRoom = () => {
         setGameStatus(GAME_STATUS.SHOWING_RESULT);
         setResult(pubnubData.users);
         break;
+      case PUBNUB_MESSAGE_TYPE.BACK_TO_OPTIONS:
+        resetGame();
+        break;
     }
   }, []);
 

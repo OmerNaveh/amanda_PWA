@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import confetti from "canvas-confetti";
 import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
@@ -51,6 +51,7 @@ const QuestionResult = ({
     });
   };
   useEffect(() => {
+    if (!result || !result?.length || !result[0]?.id) return;
     if (!animationInProgress || participents.length <= 1) {
       showFireworks();
       return;
@@ -102,7 +103,16 @@ const QuestionResult = ({
         dir="rtl"
         className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full py-2 flex-shrink-0"
       >
-        <UserSlider user={participents[currentHighlight]} />
+        {!result || !result.length || !result[0]?.id ? (
+          <div
+            dir="rtl"
+            className="h-full aspect-square justify-center flex flex-col gap-4 bg-card rounded-lg p-2 border-2 border-card snap-center"
+          >
+            <p>{"  אחד לא מצביע אין זוכה..."}</p>
+          </div>
+        ) : (
+          <UserSlider user={participents[currentHighlight]} />
+        )}
       </div>
     </div>
   );

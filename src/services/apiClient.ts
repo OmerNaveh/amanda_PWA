@@ -91,3 +91,8 @@ export const endGame = async (sessionId: number) => {
   const { data } = await apiClient.get(`session/${sessionId}/summarize`);
   return data;
 };
+
+export const returnToOptions = async (spaceId: number) => {
+  const { data } = await apiClient.post(`space/${spaceId}/return-to-options`);
+  return data;
+};

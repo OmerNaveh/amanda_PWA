@@ -1,5 +1,5 @@
 import { useMutation } from "react-query";
-import { startSession } from "services/apiClient";
+import { returnToOptions, startSession } from "services/apiClient";
 import { useGameContext } from "context/GameContext";
 import { useAuthContext } from "context/AuthContext";
 import QuestionCard from "./QuestionCard";
@@ -23,11 +23,17 @@ const GameResults = () => {
       },
     }
   );
+  const { mutate: backToOptions, isLoading: loadingBackToOptions } =
+    useMutation(() => returnToOptions(space!.id), {
+      onSuccess: () => {
+        resetGame();
+      },
+    });
   const playNewGame = async () => {
     mutate();
   };
   const viewOtherGames = () => {
-    resetGame();
+    backToOptions();
   };
   const renderButtons = () => {
     return (
@@ -35,7 +41,9 @@ const GameResults = () => {
         <Button onClick={playNewGame} disabled={isLoading}>
           {isLoading ? <CircularProgress /> : "עוד הפעם"}
         </Button>
-        <Button onClick={viewOtherGames}>{"לבחירת משחק"}</Button>
+        <Button onClick={viewOtherGames} disabled={loadingBackToOptions}>
+          {loadingBackToOptions ? <CircularProgress /> : "לבחירת משחק"}
+        </Button>
       </>
     );
   };
