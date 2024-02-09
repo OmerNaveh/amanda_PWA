@@ -108,7 +108,7 @@ const QuestionResult = ({
             dir="rtl"
             className="h-full aspect-square justify-center flex flex-col gap-4 bg-card rounded-lg p-2 border-2 border-card snap-center"
           >
-            <p>{"  אחד לא מצביע אין זוכה..."}</p>
+            <p>{"נראה שאף אחד לא הצביע..."}</p>
           </div>
         ) : (
           <UserSlider user={participents[currentHighlight]} />
