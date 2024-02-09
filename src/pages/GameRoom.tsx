@@ -79,8 +79,8 @@ const GameRoom = () => {
         setQuestion(pubnubData.question);
         break;
       case PUBNUB_MESSAGE_TYPE.NEXT_RESULT:
-        setGameStatus(GAME_STATUS.SHOWING_RESULT);
         setResult(pubnubData.users);
+        setGameStatus(GAME_STATUS.SHOWING_RESULT);
         break;
       case PUBNUB_MESSAGE_TYPE.BACK_TO_OPTIONS:
         resetGame();

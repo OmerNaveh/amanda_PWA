@@ -84,9 +84,9 @@ const QuestionBoard = ({ question }: props) => {
         }
         renderCountdown={renderCountdown}
         renderButtons={
-          gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS && !isAdmin
-            ? undefined
-            : rennderAdminButtons
+          gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS && !!isAdmin
+            ? rennderAdminButtons
+            : undefined
         }
       />
       {gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS &&

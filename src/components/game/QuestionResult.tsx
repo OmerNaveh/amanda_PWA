@@ -80,7 +80,7 @@ const QuestionResult = ({
       clearTimeout(stopAnimationTimeout);
       setCurrentHighlight(0);
     };
-  }, [participents, result, animationInProgress]);
+  }, [participents, result]);
 
   const renderAdminButtons = () => {
     return questionCounter === TOTAL_QUESTIONS ? (
