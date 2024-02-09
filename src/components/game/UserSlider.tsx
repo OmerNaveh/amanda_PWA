@@ -32,7 +32,8 @@ const UserSlider = ({
       className="h-full max-h-full shrink-0 aspect-square flex flex-col gap-4 bg-card rounded-lg p-2 border-2 border-card snap-center"
     >
       <div
-        className="relative w-full aspect-square mx-auto rounded-lg"
+        className={`relative w-full mx-auto rounded-lg 
+        ${!!onClick ? "h-[40%]" : "aspect-square"}`}
         style={{ backgroundColor: `rgb(${user.color})` }}
       >
         <h5 className="absolute bottom-0 left-0 right-0 backdrop-blur py-1 text-base font-bold rounded-lg">
