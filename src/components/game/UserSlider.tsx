@@ -33,7 +33,11 @@ const UserSlider = ({
     >
       <div
         className={`relative w-full mx-auto rounded-lg 
-        ${!!onClick ? "h-[calc(100%-2.75rem-1rem)]" : "aspect-square"}`}
+        ${
+          !!onClick || !!isGameSummmary
+            ? "h-[calc(100%-2.75rem-1rem)]"
+            : "aspect-square"
+        }`}
         style={{ backgroundColor: `rgb(${user.color})` }}
       >
         <h5 className="absolute bottom-0 left-0 right-0 backdrop-blur py-1 text-base font-bold rounded-lg">
