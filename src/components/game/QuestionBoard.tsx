@@ -100,7 +100,7 @@ const QuestionBoard = ({ question }: props) => {
       ) : (
         <div
           dir="rtl"
-          className={`flex gap-2 items-center snap-x snap-mandatory overflow-x-auto overflow-y-hidden h-[50%] w-full py-2 flex-shrink-0
+          className={`flex gap-2 items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full py-2 flex-shrink-0
           ${participents.length === 1 && "justify-center"}`}
         >
           {participents.map((participant) => (
