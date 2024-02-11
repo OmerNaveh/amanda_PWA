@@ -8,6 +8,7 @@ const useWakeLock = () => {
     const requestWakeLock = async () => {
       if (isWakeLockSupported() && !wakeLockRef.current) {
         try {
+          // @ts-ignore
           wakeLockRef.current = await navigator.wakeLock.request("screen");
         } catch (err) {}
       }
@@ -16,6 +17,7 @@ const useWakeLock = () => {
     const releaseWakeLock = async () => {
       if (isWakeLockSupported() && !!wakeLockRef.current) {
         try {
+          // @ts-ignore
           await wakeLockRef.current.release();
           wakeLockRef.current = null;
         } catch (err) {}
