@@ -10,8 +10,8 @@ import { useGameContext } from "context/GameContext";
 import ParticipentsBottomSheet from "components/game/ParticipentsBottomSheet";
 import WaitingRoom from "components/game/WaitingRoom";
 import LoaderCard from "components/game/LoaderCard";
-import { useMutation } from "react-query";
-import { endGame } from "services/apiClient";
+import { useMutation, useQuery } from "react-query";
+import { endGame, getParticipants } from "services/apiClient";
 import { useToast } from "components/ui/useToast";
 import { getErrorMessage } from "lib/errorHandling";
 const PlayTime = lazy(() => import("components/game/PlayTime"));
@@ -36,6 +36,23 @@ const GameRoom = () => {
   const { user } = useAuthContext();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Paricipents long polling
+  useQuery({
+    queryKey: "participents",
+    queryFn: async () => {
+      return getParticipants(space!.id);
+    },
+    enabled: !!space?.id,
+    onSuccess: (data) => {
+      if (!data) return;
+      setParticipents((prev) => {
+        if (JSON.stringify(prev) === JSON.stringify(data)) return prev;
+        return data;
+      });
+    },
+    refetchInterval: 30_000,
+  });
 
   const handleMessage = useCallback(({ message }: MessageEvent) => {
     const { data } = message;

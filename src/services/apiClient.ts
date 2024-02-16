@@ -4,6 +4,7 @@ import {
   CreateOrJoinSpaceResponse,
   QuestionTypeResponse,
 } from "models/responses";
+import { User } from "models/user";
 
 const { REACT_APP_BASE_API, REACT_APP_APPLICATION_TOKEN } = process.env;
 
@@ -90,6 +91,11 @@ export const getQuestionResult = async (
 export const endGame = async (sessionId: number) => {
   const { data } = await apiClient.get(`session/${sessionId}/summarize`);
   return data;
+};
+
+export const getParticipants = async (spaceId: number) => {
+  const { data } = await apiClient.get(`space/${spaceId}/users`);
+  return data as User[];
 };
 
 export const returnToOptions = async (spaceId: number) => {
