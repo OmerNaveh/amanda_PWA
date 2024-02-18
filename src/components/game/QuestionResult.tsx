@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import confetti from "canvas-confetti";
 import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
@@ -6,9 +6,9 @@ import { User } from "models/user";
 import QuestionCard from "./QuestionCard";
 import UserSlider from "./UserSlider";
 import { TOTAL_QUESTIONS } from "constants/gameRules";
+import { useGameContext } from "context/GameContext";
 
 type props = {
-  participents: User[];
   result: User[];
   showNextQuestion: () => void;
   loadingNextQuestion: boolean;
@@ -22,7 +22,6 @@ const TOTAL_ANIMATION_DURATION = 5000;
 const CYCLE_INTERVAL = 300;
 
 const QuestionResult = ({
-  participents,
   result,
   showNextQuestion,
   loadingNextQuestion,
@@ -33,6 +32,10 @@ const QuestionResult = ({
 }: props) => {
   const [currentHighlight, setCurrentHighlight] = useState<number>(0);
   const [animationInProgress, setAnimationInProgress] = useState<boolean>(true);
+  const { participents: part } = useGameContext();
+  const participents = useMemo(() => {
+    return part;
+  }, []);
   const showFireworks = () => {
     const colors = ["#FFFFFF", "#211134", "#97A9F6"];
     confetti({

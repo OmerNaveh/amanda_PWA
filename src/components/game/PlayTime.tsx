@@ -22,7 +22,7 @@ const PlayTime = ({
   loadingFinishGame,
 }: props) => {
   const { user } = useAuthContext();
-  const { session, participents, questionCounter } = useGameContext();
+  const { session, questionCounter } = useGameContext();
   const { toast } = useToast();
 
   const { mutate: TriggerNextQuestion, isLoading: loadingNextQuestion } =
@@ -43,7 +43,6 @@ const PlayTime = ({
         <QuestionBoard question={question} />
       ) : (
         <QuestionResult
-          participents={participents}
           result={result}
           showNextQuestion={nextQuestion}
           loadingNextQuestion={loadingNextQuestion}

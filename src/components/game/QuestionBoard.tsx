@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "react-query";
 import { GAME_STATUS, Question } from "models/game";
 import { User } from "models/user";
@@ -21,9 +21,17 @@ const QuestionBoard = ({ question }: props) => {
   const [currentAnswerSelection, setCurrentAnswerSelection] =
     useState<User | null>(null);
   const { user } = useAuthContext();
-  const { participents, session, gameStatus, setGameStatus } = useGameContext();
+  const {
+    participents: part,
+    session,
+    gameStatus,
+    setGameStatus,
+  } = useGameContext();
   const { toast } = useToast();
 
+  const participents = useMemo(() => {
+    return part;
+  }, []);
   const { mutate: TriggerSelectingAnswer, isLoading: loadingAnswerSelection } =
     useMutation(
       (selection: User) =>
