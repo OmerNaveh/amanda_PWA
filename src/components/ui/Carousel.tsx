@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, useState } from "react";
+import { HTMLAttributes, useState } from "react";
 import { motion, useMotionValue } from "framer-motion";
 import { cn } from "lib/utils";
 

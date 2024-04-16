@@ -27,7 +27,7 @@ const QuestionTypeCard = ({ questionType, isLoading, onClick }: props) => {
           alt="question type image"
           className="h-full w-full object-cover rounded-lg"
         />
-        <h5 className="absolute bottom-0 left-0 right-0 backdrop-blur py-1 text-base font-bold">
+        <h5 className="absolute bottom-0 left-0 right-0 bg-black/70 rounded-b-lg py-1 text-lg font-bold">
           {questionType.name}
         </h5>
       </div>

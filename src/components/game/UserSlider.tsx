@@ -40,7 +40,7 @@ const UserSlider = ({
         }`}
         style={{ backgroundColor: `rgb(${user.color})` }}
       >
-        <h5 className="absolute bottom-0 left-0 right-0 backdrop-blur py-1 text-base font-bold rounded-lg">
+        <h5 className="absolute bottom-0 left-0 right-0 py-1 text-lg bg-black/60 font-bold rounded-b-lg">
           {user.name}
         </h5>
       </div>
@@ -74,5 +74,4 @@ const UserSlider = ({
     </div>
   );
 };
-
 export default UserSlider;

@@ -1,5 +1,5 @@
 import { useMutation } from "react-query";
-import { Question } from "models/game";
+import { GAME_STATUS, Question } from "models/game";
 import { User } from "models/user";
 import { getNextQuestion } from "services/apiClient";
 import { useToast } from "components/ui/useToast";
@@ -22,7 +22,7 @@ const PlayTime = ({
   loadingFinishGame,
 }: props) => {
   const { user } = useAuthContext();
-  const { session, questionCounter } = useGameContext();
+  const { session, questionCounter, gameStatus } = useGameContext();
   const { toast } = useToast();
 
   const { mutate: TriggerNextQuestion, isLoading: loadingNextQuestion } =
@@ -39,7 +39,7 @@ const PlayTime = ({
   if (!user) return null;
   return (
     <>
-      {!result ? (
+      {gameStatus !== GAME_STATUS.SHOWING_RESULT ? (
         <QuestionBoard question={question} />
       ) : (
         <QuestionResult

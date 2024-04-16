@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { useMutation } from "react-query";
 import { GAME_STATUS, Question } from "models/game";
 import { User } from "models/user";
@@ -16,23 +16,15 @@ import Carousel from "components/ui/Carousel";
 type props = {
   question?: Question | null;
 };
-const CountdownTime = 15;
+const COUNTDOWN_TIME = 30;
 
 const QuestionBoard = ({ question }: props) => {
   const [currentAnswerSelection, setCurrentAnswerSelection] =
     useState<User | null>(null);
   const { user } = useAuthContext();
-  const {
-    participents: part,
-    session,
-    gameStatus,
-    setGameStatus,
-  } = useGameContext();
+  const { participents, session, gameStatus, setGameStatus } = useGameContext();
   const { toast } = useToast();
 
-  const participents = useMemo(() => {
-    return part;
-  }, []);
   const { mutate: TriggerSelectingAnswer, isLoading: loadingAnswerSelection } =
     useMutation(
       (selection: User) =>
@@ -54,9 +46,11 @@ const QuestionBoard = ({ question }: props) => {
         toast({ title: getErrorMessage(err), variant: "destructive" });
       },
     });
+
   const selectAnswer = (answer: User) => {
     TriggerSelectingAnswer(answer);
   };
+
   const showResult = () => {
     TriggerShowResult();
   };
@@ -67,7 +61,7 @@ const QuestionBoard = ({ question }: props) => {
 
     return (
       <CountdownTimer
-        initialSeconds={CountdownTime}
+        initialSeconds={COUNTDOWN_TIME}
         onCountdownComplete={onCountdownComplete}
       />
     );
@@ -102,14 +96,14 @@ const QuestionBoard = ({ question }: props) => {
       !!currentAnswerSelection ? (
         <div
           dir="rtl"
-          className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full flex-shrink-0"
+          className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full flex-shrink-0 pb-2"
         >
           <UserSlider user={currentAnswerSelection} />
         </div>
       ) : gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS && !question ? (
         <div
           dir="rtl"
-          className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full flex-shrink-0"
+          className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full flex-shrink-0 pb-2"
         >
           <Carousel
             cards={participents.map((participant) => (
@@ -121,7 +115,7 @@ const QuestionBoard = ({ question }: props) => {
       ) : (
         <div
           dir="rtl"
-          className={`flex gap-2 items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full flex-shrink-0
+          className={`flex gap-2 items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full flex-shrink-0 pb-2
           ${participents.length === 1 && "justify-center"}`}
         >
           <Carousel

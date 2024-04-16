@@ -47,7 +47,7 @@ const QuestionCard = ({
         </div>
       )}
       {!!renderCountdown && (
-        <div className="absolute -bottom-4 right-0 left-0">
+        <div className="absolute -bottom-3 right-0 left-0">
           {renderCountdown()}
         </div>
       )}

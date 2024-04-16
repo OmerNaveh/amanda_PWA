@@ -9,7 +9,7 @@ import { TOTAL_QUESTIONS } from "constants/gameRules";
 import { useGameContext } from "context/GameContext";
 
 type props = {
-  result: User[];
+  result: User[] | null;
   showNextQuestion: () => void;
   loadingNextQuestion: boolean;
   finishGame: () => void;
@@ -104,7 +104,7 @@ const QuestionResult = ({
       />
       <div
         dir="rtl"
-        className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full py-2 flex-shrink-0"
+        className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full pb-2 flex-shrink-0"
       >
         {!result || !result.length || !result[0]?.id ? (
           <div
