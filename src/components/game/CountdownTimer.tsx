@@ -27,7 +27,7 @@ const CountdownTimer = ({
     return () => clearTimeout(timerId);
   }, [secondsLeft, onCountdownComplete]);
 
-  return <CountdownItem num={secondsLeft} text={"שניות"} />;
+  return <CountdownItem num={secondsLeft} />;
 };
 
 export default CountdownTimer;

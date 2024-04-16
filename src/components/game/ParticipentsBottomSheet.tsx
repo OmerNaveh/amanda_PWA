@@ -46,7 +46,7 @@ const ParticipentsBottomSheet = ({
         >
           <div className="bg-white/10 rounded-full w-[calc(100%-8rem)] h-2 self-center" />
           <h4 dir="rtl" className="w-full font-bold my-auto text-base">
-            {gameStatus !== GAME_STATUS.PRE_GAME
+            {gameStatus === GAME_STATUS.PRE_GAME
               ? `${participents.length} אנשים מוכנים לשחק`
               : `${participents.length} אנשים במשחק`}
           </h4>

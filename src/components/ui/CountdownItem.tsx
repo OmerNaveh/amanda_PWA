@@ -4,7 +4,7 @@ import { HTMLAttributes } from "react";
 
 type props = {
   num: number;
-  text: string;
+  text?: string;
   containerClassName?: HTMLAttributes<HTMLDivElement>["className"];
 };
 const CountdownItem = ({ num, text, containerClassName }: props) => {
@@ -29,9 +29,11 @@ const CountdownItem = ({ num, text, containerClassName }: props) => {
           </motion.span>
         </AnimatePresence>
       </div>
-      <span className="text-xs md:text-sm font-light text-slate-500">
-        {text}
-      </span>
+      {!!text && (
+        <span className="text-xs md:text-sm font-light text-slate-500">
+          {text}
+        </span>
+      )}
     </div>
   );
 };
