@@ -56,7 +56,7 @@ const HomePage = () => {
     const amandaId = amandaIdRef.current?.value;
     const nickname = nicknameRef.current?.value;
     if (!amandaId || !color || !nickname) {
-      toast({ title: "Please fill out all fields", variant: "destructive" });
+      toast({ title: "יש למלא את כל השדות", variant: "destructive" });
       return;
     }
     mutate({ amandaId, name: nickname, color: extractRGB(color) });

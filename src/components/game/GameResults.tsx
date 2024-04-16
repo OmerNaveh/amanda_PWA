@@ -6,6 +6,7 @@ import QuestionCard from "./QuestionCard";
 import UserSlider from "./UserSlider";
 import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
+import Carousel from "components/ui/Carousel";
 
 const GameResults = () => {
   const { selectedGameType, gameSummary, resetGame, space } = useGameContext();
@@ -55,15 +56,18 @@ const GameResults = () => {
         className={`flex gap-2 items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full py-2 flex-shrink-0
           ${gameSummary.length === 1 && "justify-center"}`}
       >
-        {gameSummary.map((participant, index) => (
-          <UserSlider
-            key={participant.id}
-            user={participant}
-            isLoading={isLoading}
-            isWinner={index === 0}
-            isGameSummmary
-          />
-        ))}
+        <Carousel
+          cards={gameSummary.map((participant, index) => (
+            <UserSlider
+              key={participant.id}
+              user={participant}
+              isLoading={isLoading}
+              isWinner={index === 0}
+              isGameSummmary
+            />
+          ))}
+          className="w-full py-0"
+        />
       </div>
     </div>
   );

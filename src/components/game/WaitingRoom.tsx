@@ -5,10 +5,13 @@ import { useGameContext } from "context/GameContext";
 import { useAuthContext } from "context/AuthContext";
 import LoaderCard from "./LoaderCard";
 import { QuestionType } from "models/responses";
+import { useToast } from "components/ui/useToast";
+import { getErrorMessage } from "lib/errorHandling";
 
 const WaitingRoom = () => {
   const { space, setSelectedGameType } = useGameContext();
   const { user } = useAuthContext();
+  const { toast } = useToast();
   const { data: questionTypes, isLoading: loadingQuestionTypes } = useQuery({
     queryKey: "questionTypes",
     queryFn: () => getQuestionTypes(),
@@ -23,6 +26,9 @@ const WaitingRoom = () => {
     {
       onSuccess: (data) => {
         setSelectedGameType(data.questionType);
+      },
+      onError: (error) => {
+        toast({ description: getErrorMessage(error), variant: "destructive" });
       },
     }
   );
