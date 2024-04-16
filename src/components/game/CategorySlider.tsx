@@ -1,6 +1,6 @@
 import QuestionTypeCard from "./QuestionTypeCard";
 import { QuestionType, QuestionTypeResponse } from "models/responses";
-import { Carousel } from "components/ui/Carousel";
+import Carousel from "components/ui/Carousel";
 
 type props = {
   questionTypes: QuestionTypeResponse;

@@ -12,7 +12,7 @@ import CircularProgress from "components/ui/CircularProgress";
 import { answerQuestion, getQuestionResult } from "services/apiClient";
 import { getErrorMessage } from "lib/errorHandling";
 import { useToast } from "components/ui/useToast";
-import { Carousel } from "components/ui/Carousel";
+import Carousel from "components/ui/Carousel";
 type props = {
   question?: Question | null;
 };

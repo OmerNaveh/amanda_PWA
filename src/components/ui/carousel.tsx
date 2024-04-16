@@ -14,7 +14,7 @@ type props = {
   cards: any[];
   className?: HTMLAttributes<HTMLDivElement>["className"];
 };
-export const Carousel = ({ cards, className }: props) => {
+const Carousel = ({ cards, className }: props) => {
   const [imgIndex, setImgIndex] = useState(0);
 
   const dragX = useMotionValue(0);
@@ -112,3 +112,5 @@ const Dots = ({ imgIndex, setImgIndex, cards }: dotProps) => {
     </div>
   );
 };
+
+export default Carousel;
