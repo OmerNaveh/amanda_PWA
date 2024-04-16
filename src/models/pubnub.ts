@@ -14,16 +14,21 @@ export enum PUBNUB_MESSAGE_TYPE {
   BACK_TO_OPTIONS = "return-to-options",
 }
 export type PUBNUB_MESSAGE =
-  | { type: PUBNUB_MESSAGE_TYPE.JOIN; user: User }
+  | { type: PUBNUB_MESSAGE_TYPE.JOIN; user: User; users: User[] }
   | { type: PUBNUB_MESSAGE_TYPE.LEAVE; user: User }
   | { type: PUBNUB_MESSAGE_TYPE.UPDATE_SPACE; space: Space }
   | {
       type: PUBNUB_MESSAGE_TYPE.START_GAME;
       question: Question;
-      questionType: QuestionType;
+      category: QuestionType;
       session: Session;
+      users: User[];
     }
-  | { type: PUBNUB_MESSAGE_TYPE.NEXT_QUESTION; question: Question }
+  | {
+      type: PUBNUB_MESSAGE_TYPE.NEXT_QUESTION;
+      question: Question;
+      users: User[];
+    }
   | { type: PUBNUB_MESSAGE_TYPE.NEXT_RESULT; users: User[] }
   | { type: PUBNUB_MESSAGE_TYPE.END_GAME; users: User[] }
   | { type: PUBNUB_MESSAGE_TYPE.BACK_TO_OPTIONS; users: User[] };

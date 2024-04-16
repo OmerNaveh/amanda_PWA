@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
-import BottomSheet from "components/ui/BottomSheet";
 import { Button } from "components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "context/AuthContext";
 import { useGameContext } from "context/GameContext";
 import { GAME_STATUS } from "models/game";
 import CircularProgress from "components/ui/CircularProgress";
+import DraggableDrawer from "components/ui/DraggableDrawer";
 
 type props = {
   finishGame: () => void;
@@ -52,15 +52,12 @@ const ParticipentsBottomSheet = ({
           </h4>
         </div>
       )}
-
-      <BottomSheet
+      <DraggableDrawer
         open={open}
-        setOpenModal={() => {
+        setOpen={() => {
           setOpen(false);
         }}
-        className="page-height rounded-t-2xl gap-2"
       >
-        <div className="bg-white/10 rounded-full w-[calc(100%-8rem)] h-2 self-center" />
         <h4 dir="rtl" className="w-full font-bold text-center text-base">
           {gameStatus === GAME_STATUS.PRE_GAME
             ? `${participents.length} אנשים מוכנים לשחק`
@@ -102,7 +99,7 @@ const ParticipentsBottomSheet = ({
             {"צא מהמשחק"}
           </Button>
         </div>
-      </BottomSheet>
+      </DraggableDrawer>
     </>
   );
 };

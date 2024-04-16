@@ -10,8 +10,8 @@ import { useGameContext } from "context/GameContext";
 import ParticipentsBottomSheet from "components/game/ParticipentsBottomSheet";
 import WaitingRoom from "components/game/WaitingRoom";
 import LoaderCard from "components/game/LoaderCard";
-import { useMutation, useQuery } from "react-query";
-import { endGame, getParticipants } from "services/apiClient";
+import { useMutation } from "react-query";
+import { endGame } from "services/apiClient";
 import { useToast } from "components/ui/useToast";
 import { getErrorMessage } from "lib/errorHandling";
 const PlayTime = lazy(() => import("components/game/PlayTime"));
@@ -37,23 +37,6 @@ const GameRoom = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Paricipents long polling
-  useQuery({
-    queryKey: "participents",
-    queryFn: async () => {
-      return getParticipants(space!.id);
-    },
-    enabled: !!space?.id,
-    onSuccess: (data) => {
-      if (!data) return;
-      setParticipents((prev) => {
-        if (JSON.stringify(prev) === JSON.stringify(data)) return prev;
-        return data;
-      });
-    },
-    refetchInterval: 30_000,
-  });
-
   const handleMessage = useCallback(({ message }: MessageEvent) => {
     const { data } = message;
     const pubnubData = data as PUBNUB_MESSAGE;
@@ -61,8 +44,9 @@ const GameRoom = () => {
 
     switch (pubnubData.type) {
       case PUBNUB_MESSAGE_TYPE.JOIN:
-        if (user?.id === pubnubData.user.id) return;
-        setParticipents((prev) => [...prev, pubnubData.user]);
+        if (user?.id === pubnubData.user.id || !pubnubData?.users?.length)
+          return;
+        setParticipents(pubnubData.users);
         break;
       case PUBNUB_MESSAGE_TYPE.LEAVE:
         setParticipents((prev) => {
@@ -79,7 +63,8 @@ const GameRoom = () => {
         setResult(null);
         setSession(pubnubData.session);
         setQuestion(pubnubData.question);
-        setSelectedGameType(pubnubData.questionType);
+        setSelectedGameType(pubnubData.category);
+        setParticipents(pubnubData.users);
         setGameSummary([]);
         break;
       case PUBNUB_MESSAGE_TYPE.END_GAME:
@@ -92,6 +77,7 @@ const GameRoom = () => {
       case PUBNUB_MESSAGE_TYPE.NEXT_QUESTION:
         setQuestionCounter((prev) => prev + 1);
         setGameStatus(GAME_STATUS.SHOWING_QUESTION);
+        setParticipents(pubnubData.users);
         setResult(null);
         setQuestion(pubnubData.question);
         break;
@@ -141,14 +127,12 @@ const GameRoom = () => {
           ) : gameStatus === GAME_STATUS.GAME_OVER ? (
             <GameResults />
           ) : (
-            !!question && (
-              <PlayTime
-                question={question}
-                result={result}
-                finishGame={finishGame}
-                loadingFinishGame={loadingFinishGame}
-              />
-            )
+            <PlayTime
+              question={question}
+              result={result}
+              finishGame={finishGame}
+              loadingFinishGame={loadingFinishGame}
+            />
           )}
         </Suspense>
       </div>

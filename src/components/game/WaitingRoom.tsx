@@ -42,7 +42,7 @@ const WaitingRoom = () => {
       ) : (
         <div className="h-full w-full flex justify-center items-center px-4">
           <p className="text-center text-4xl">
-            {"סעמק משהו השתבש, יאללה תלחצו על ריפרש"}
+            {"נראה שמשהו השתבש, יאללה תלחצו על ריפרש"}
           </p>
         </div>
       )}

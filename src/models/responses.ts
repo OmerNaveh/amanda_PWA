@@ -12,11 +12,7 @@ export type QuestionType = {
   description: string;
   picture: string;
   isSubscriptionBased?: boolean;
+  rank: number;
 };
 
-export type QuestionTypeResponse = {
-  id: number;
-  name: string;
-  picture: string;
-  questionTypes: QuestionType[];
-};
+export type QuestionTypeResponse = QuestionType[];

@@ -10,7 +10,7 @@ import QuestionBoard from "./QuestionBoard";
 import QuestionResult from "./QuestionResult";
 
 type props = {
-  question: Question;
+  question?: Question | null;
   result: User[] | null;
   finishGame: () => void;
   loadingFinishGame: boolean;
@@ -36,7 +36,7 @@ const PlayTime = ({
     TriggerNextQuestion();
   };
 
-  if (!session || !user) return null;
+  if (!user) return null;
   return (
     <>
       {!result ? (
@@ -48,7 +48,7 @@ const PlayTime = ({
           loadingNextQuestion={loadingNextQuestion}
           finishGame={finishGame}
           loadingFinishGame={loadingFinishGame}
-          isAdmin={String(session.adminId) === String(user.id)}
+          isAdmin={String(session?.adminId) === String(user.id)}
           questionCounter={questionCounter}
         />
       )}

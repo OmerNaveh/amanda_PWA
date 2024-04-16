@@ -12,8 +12,9 @@ import CircularProgress from "components/ui/CircularProgress";
 import { answerQuestion, getQuestionResult } from "services/apiClient";
 import { getErrorMessage } from "lib/errorHandling";
 import { useToast } from "components/ui/useToast";
+import { Carousel } from "components/ui/Carousel";
 type props = {
-  question: Question;
+  question?: Question | null;
 };
 const CountdownTime = 15;
 
@@ -35,7 +36,7 @@ const QuestionBoard = ({ question }: props) => {
   const { mutate: TriggerSelectingAnswer, isLoading: loadingAnswerSelection } =
     useMutation(
       (selection: User) =>
-        answerQuestion(session!.id, user!.id, question.id, selection.id),
+        answerQuestion(session!.id, user!.id, question!.id, selection.id),
       {
         onSuccess: (data, selection) => {
           setCurrentAnswerSelection(selection);
@@ -48,7 +49,7 @@ const QuestionBoard = ({ question }: props) => {
     );
 
   const { mutate: TriggerShowResult, isLoading: showAnswerResultLoading } =
-    useMutation(() => getQuestionResult(session!.id, question.id), {
+    useMutation(() => getQuestionResult(session!.id, question!.id), {
       onError: (err) => {
         toast({ title: getErrorMessage(err), variant: "destructive" });
       },
@@ -86,11 +87,11 @@ const QuestionBoard = ({ question }: props) => {
     <div className="flex flex-col gap-4 h-full">
       <QuestionCard
         question={
-          gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS
+          gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS || !question
             ? "נחכה שכולם יענו"
             : question.content
         }
-        renderCountdown={renderCountdown}
+        renderCountdown={!!question ? renderCountdown : undefined}
         renderButtons={
           gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS && !!isAdmin
             ? rennderAdminButtons
@@ -101,24 +102,39 @@ const QuestionBoard = ({ question }: props) => {
       !!currentAnswerSelection ? (
         <div
           dir="rtl"
-          className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full py-2 flex-shrink-0"
+          className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full flex-shrink-0"
         >
           <UserSlider user={currentAnswerSelection} />
+        </div>
+      ) : gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS && !question ? (
+        <div
+          dir="rtl"
+          className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full flex-shrink-0"
+        >
+          <Carousel
+            cards={participents.map((participant) => (
+              <UserSlider key={participant.id} user={participant} />
+            ))}
+            className="w-full py-0"
+          />
         </div>
       ) : (
         <div
           dir="rtl"
-          className={`flex gap-2 items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full py-2 flex-shrink-0
+          className={`flex gap-2 items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full flex-shrink-0
           ${participents.length === 1 && "justify-center"}`}
         >
-          {participents.map((participant) => (
-            <UserSlider
-              key={participant.id}
-              user={participant}
-              onClick={selectAnswer}
-              isLoading={loadingAnswerSelection}
-            />
-          ))}
+          <Carousel
+            cards={participents.map((participant) => (
+              <UserSlider
+                key={participant.id}
+                user={participant}
+                onClick={selectAnswer}
+                isLoading={loadingAnswerSelection}
+              />
+            ))}
+            className="w-full py-0"
+          />
         </div>
       )}
     </div>

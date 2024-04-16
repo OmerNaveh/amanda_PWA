@@ -1,3 +1,4 @@
+import CountdownItem from "components/ui/CountdownItem";
 import { useEffect, useState } from "react";
 
 type CountdownTimerProps = {
@@ -26,13 +27,7 @@ const CountdownTimer = ({
     return () => clearTimeout(timerId);
   }, [secondsLeft, onCountdownComplete]);
 
-  return (
-    <div className="flex items-center justify-center font-bold w-full">
-      <p className="flex items-center justify-center font-bold border border-card h-8 w-8 rounded-full">
-        {secondsLeft}
-      </p>
-    </div>
-  );
+  return <CountdownItem num={secondsLeft} text={"שניות"} />;
 };
 
 export default CountdownTimer;

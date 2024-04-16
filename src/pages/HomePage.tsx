@@ -18,13 +18,14 @@ import { Input } from "components/ui/input";
 import { COLORS } from "constants/colors";
 import { useGameContext } from "context/GameContext";
 import { useAuthContext } from "context/AuthContext";
+import { GAME_STATUS } from "models/game";
 
 const HomePage = () => {
   const [color, setColor] = useState<string | null>(null);
   const amandaIdRef = React.useRef<HTMLInputElement>(null);
   const nicknameRef = React.useRef<HTMLInputElement>(null);
 
-  const { setSpace, setParticipents } = useGameContext();
+  const { setSpace, setParticipents, setGameStatus } = useGameContext();
   const { setUser } = useAuthContext();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -38,6 +39,9 @@ const HomePage = () => {
         setSpace(data.space);
         setParticipents(data.space.users);
         setUser(data.user);
+        if (!!data.space.isSessionInPlay) {
+          setGameStatus(GAME_STATUS.WAITING_FOR_ANSWERS);
+        }
         navigate("/game");
       },
       onError: (error) => {
@@ -74,31 +78,29 @@ const HomePage = () => {
           <Input ref={nicknameRef} placeholder={"הכנס כינוי"} />
         </div>
 
-        <div>
-          <label htmlFor="color" className="block font-medium">
-            {"בחר צבע"}
-          </label>
-          <div className="flex items-center gap-4 ">
-            <Paint className="h-8 w-8 flex-shrink-0" />
-            <div dir="rtl" className="flex gap-4 overflow-x-auto px-2 py-4">
-              {Object.keys(COLORS).map((colorKey) => {
-                const colorSelection = COLORS[colorKey];
-                return (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    key={colorKey}
-                    onClick={() => setColor(colorSelection)}
-                    className={`flex-shrink-0 w-10 h-10 rounded-lg cursor-pointer ${
-                      colorSelection === color
-                        ? "ring-2 ring-black ring-offset-2"
-                        : ""
-                    }`}
-                    style={{ backgroundColor: `rgb(${colorSelection})` }}
-                  />
-                );
-              })}
-            </div>
+        <div className="flex items-center gap-4 overflow-hidden">
+          <Paint className="h-8 w-8 flex-shrink-0" />
+          <div
+            dir="rtl"
+            className="py-2 px-1 flex flex-wrap gap-4 max-h-36 overflow-y-scroll justify-center"
+          >
+            {Object.keys(COLORS).map((colorKey) => {
+              const colorSelection = COLORS[colorKey];
+              return (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  key={colorKey}
+                  onClick={() => setColor(colorSelection)}
+                  className={`flex-shrink-0 w-10 h-10 rounded-lg cursor-pointer ${
+                    colorSelection === color
+                      ? "ring-2 ring-black ring-offset-2"
+                      : ""
+                  }`}
+                  style={{ backgroundColor: `rgb(${colorSelection})` }}
+                />
+              );
+            })}
           </div>
         </div>
 

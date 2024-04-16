@@ -29,7 +29,7 @@ const UserSlider = ({
       ref={cardRef}
       key={user.id}
       dir="rtl"
-      className="h-full max-h-full shrink-0 aspect-square flex flex-col gap-4 bg-card rounded-lg p-2 border-2 border-card snap-center"
+      className="h-full max-h-full w-full flex flex-col gap-4 bg-card rounded-lg p-2 border-2 border-card"
     >
       <div
         className={`relative w-full mx-auto rounded-lg 

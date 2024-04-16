@@ -2,7 +2,7 @@ import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
 import useIntersectionObserver from "hooks/useIntersectionObserver";
 import { QuestionType } from "models/responses";
-import React, { useRef } from "react";
+import { useRef } from "react";
 
 type props = {
   questionType: QuestionType;
@@ -19,9 +19,9 @@ const QuestionTypeCard = ({ questionType, isLoading, onClick }: props) => {
     <div
       ref={cardRef}
       key={questionType.id}
-      className="h-full w-[90%] shrink-0 flex flex-col bg-card rounded-lg p-2 gap-2 border-2 border-card snap-center"
+      className="h-full w-full flex flex-col bg-card rounded-lg p-2 gap-2 border-2 border-card overflow-hidden"
     >
-      <div className="relative h-[40%] w-full">
+      <div className="relative h-[60%] w-full">
         <img
           src={questionType.picture}
           alt="question type image"
@@ -36,7 +36,7 @@ const QuestionTypeCard = ({ questionType, isLoading, onClick }: props) => {
       </p>
 
       <Button
-        disabled={isLoading || !!questionType?.isSubscriptionBased}
+        disabled={isLoading}
         onClick={() => {
           onClick(questionType);
         }}

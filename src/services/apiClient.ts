@@ -4,7 +4,6 @@ import {
   CreateOrJoinSpaceResponse,
   QuestionTypeResponse,
 } from "models/responses";
-import { User } from "models/user";
 
 const { REACT_APP_BASE_API, REACT_APP_APPLICATION_TOKEN } = process.env;
 
@@ -31,16 +30,9 @@ export const leaveSpace = async (userId: number) => {
   return data;
 };
 
-export const updateSpace = async (spaceId: number, name: string) => {
-  const { data } = await apiClient.put(`space/${spaceId}`, {
-    name,
-  });
-  return data;
-};
-
 export const getQuestionTypes = async () => {
   const { data } = await apiClient.get(`category`);
-  return data as QuestionTypeResponse[];
+  return data as QuestionTypeResponse;
 };
 
 export const startSession = async ({
@@ -48,17 +40,16 @@ export const startSession = async ({
   userId,
   questionTypeId,
 }: StartSessionRequest) => {
-  const { data } = await apiClient.post(
-    `space/${spaceId}/user/${userId}/start-session`,
-    {
-      questionTypeId: questionTypeId || 1,
-    }
-  );
+  const { data } = await apiClient.post(`session`, {
+    adminId: userId,
+    spaceId,
+    categoryId: questionTypeId || 1,
+  });
   return data;
 };
 
 export const getNextQuestion = async (sessionId: number) => {
-  const { data } = await apiClient.get(`session/${sessionId}/next-question`);
+  const { data } = await apiClient.post(`session/${sessionId}/next-question`);
   return data;
 };
 
@@ -68,13 +59,11 @@ export const answerQuestion = async (
   questionId: number,
   chosenUserId: number
 ) => {
-  const { data } = await apiClient.post(
-    `session/${sessionId}/user/${userId}/answer`,
-    {
-      questionId,
-      chosenUserId,
-    }
-  );
+  const { data } = await apiClient.post(`session/${sessionId}/answer`, {
+    questionId,
+    chosenUserId,
+    userId,
+  });
   return data;
 };
 
@@ -82,20 +71,15 @@ export const getQuestionResult = async (
   sessionId: number,
   questionId: number
 ) => {
-  const { data } = await apiClient.get(
+  const { data } = await apiClient.post(
     `session/${sessionId}/question/${questionId}/result`
   );
   return data;
 };
 
 export const endGame = async (sessionId: number) => {
-  const { data } = await apiClient.get(`session/${sessionId}/summarize`);
+  const { data } = await apiClient.post(`session/${sessionId}/summary`);
   return data;
-};
-
-export const getParticipants = async (spaceId: number) => {
-  const { data } = await apiClient.get(`space/${spaceId}/users`);
-  return data as User[];
 };
 
 export const returnToOptions = async (spaceId: number) => {
