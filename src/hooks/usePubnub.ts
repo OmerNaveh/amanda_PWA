@@ -1,57 +1,42 @@
 import { useEffect, useRef } from "react";
-import Pubnub from "pubnub";
+import io, { Socket } from "socket.io-client";
 import { useAuthContext } from "context/AuthContext";
 
 type props = {
-  handleMessage: ({ message }: Pubnub.MessageEvent) => void;
+  handleMessage: (data: any) => void;
+  channel?: string | null;
 };
+const { REACT_APP_BASE_API } = process.env;
 
-const { REACT_APP_PUBNUB_SUBSCRIBE_KEY } = process.env;
-const usePubnub = ({ handleMessage }: props) => {
-  const pubnubClient = useRef<Pubnub | null>(null);
-  const messageEventHandlerRef = useRef<any | null>(null);
+const useSocket = ({ handleMessage, channel }: props) => {
+  const socketRef = useRef<Socket | null>(null);
   const { user } = useAuthContext();
 
-  // Initial pubnub setup
   useEffect(() => {
-    if (!REACT_APP_PUBNUB_SUBSCRIBE_KEY || !user?.id) return;
-    pubnubClient.current = new Pubnub({
-      subscribeKey: REACT_APP_PUBNUB_SUBSCRIBE_KEY!,
-      uuid: String(user.id),
+    if (!REACT_APP_BASE_API || !user?.id || !channel) return;
+
+    // Initialize socket connection
+    socketRef.current = io(REACT_APP_BASE_API, {
+      query: { userId: user.id }, // Pass user ID to server if needed
     });
-    if (messageEventHandlerRef.current) {
-      pubnubClient.current.removeListener(messageEventHandlerRef.current);
-      messageEventHandlerRef.current = { message: handleMessage };
-    } else {
-      messageEventHandlerRef.current = { message: handleMessage };
-    }
-    pubnubClient.current.addListener(messageEventHandlerRef.current);
+    socketRef.current.emit("joinChannel", channel);
+    // Event listener for incoming messages
+    socketRef.current.on("newMessage", handleMessage);
+
     return () => {
-      if (!pubnubClient.current) return;
-      pubnubClient.current.removeListener(messageEventHandlerRef.current);
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
     };
-  }, []);
+  }, [handleMessage, user?.id]);
 
-  const connectToPubnub = (channel: string | null) => {
-    if (!channel || pubnubClient.current === null) return;
-    const subscribedChannels = pubnubClient.current.getSubscribedChannels();
-    if (subscribedChannels.includes(channel)) return; // prevent duplicate subscriptions to same channel
-    pubnubClient.current.subscribe({ channels: [channel], withPresence: true });
-    console.log("subscribed to channel");
-  };
-  const handleDisconnectFromPubnub = (channel: string | null) => {
-    if (!pubnubClient.current || !channel) return;
-    pubnubClient.current.unsubscribe({
-      channels: [channel],
-    });
-
-    console.log("disconnected from channel");
+  const sendMessage = (message: string) => {
+    if (socketRef.current) {
+      socketRef.current.emit("sendMessage", { message }); // Emit a message to the server
+    }
   };
 
-  return {
-    connectToPubnub,
-    handleDisconnectFromPubnub,
-  };
+  return { sendMessage };
 };
 
-export default usePubnub;
+export default useSocket;

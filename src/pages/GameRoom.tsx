@@ -1,6 +1,5 @@
 import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MessageEvent } from "pubnub";
 import { GAME_STATUS, Question } from "models/game";
 import { PUBNUB_MESSAGE, PUBNUB_MESSAGE_TYPE } from "models/pubnub";
 import { User } from "models/user";
@@ -14,6 +13,7 @@ import { useMutation } from "react-query";
 import { endGame } from "services/apiClient";
 import { useToast } from "components/ui/useToast";
 import { getErrorMessage } from "lib/errorHandling";
+import useSocket from "hooks/usePubnub";
 const PlayTime = lazy(() => import("components/game/PlayTime"));
 const GameResults = lazy(() => import("components/game/GameResults"));
 
@@ -37,10 +37,8 @@ const GameRoom = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleMessage = useCallback(({ message }: MessageEvent) => {
-    const { data } = message;
-    const pubnubData = data as PUBNUB_MESSAGE;
-    console.log(pubnubData);
+  const handleMessage = useCallback((data: any) => {
+    const pubnubData = data?.data as PUBNUB_MESSAGE;
 
     switch (pubnubData.type) {
       case PUBNUB_MESSAGE_TYPE.JOIN:
@@ -91,9 +89,7 @@ const GameRoom = () => {
     }
   }, []);
 
-  const { connectToPubnub, handleDisconnectFromPubnub } = usePubnub({
-    handleMessage,
-  });
+  const { sendMessage } = useSocket({ handleMessage, channel: space?.channel });
   const { mutate: TriggerEndingGame, isLoading: loadingFinishGame } =
     useMutation(() => endGame(session!.id), {
       onError: (err) => {
@@ -103,18 +99,12 @@ const GameRoom = () => {
   const finishGame = () => {
     TriggerEndingGame();
   };
-  // PubNub connection
+
   useEffect(() => {
     if (!space || !user) {
       navigate("/");
       return;
     }
-    connectToPubnub(space.channel);
-
-    return () => {
-      if (!space || !user) return;
-      handleDisconnectFromPubnub(space.channel);
-    };
   }, []);
 
   if (!space || !user) return null;
