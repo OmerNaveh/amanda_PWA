@@ -53,7 +53,7 @@ const GameResults = () => {
       <QuestionCard question={"תוצאות המשחק"} renderButtons={renderButtons} />
       <div
         dir="rtl"
-        className={`flex gap-2 items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full py-2 flex-shrink-0
+        className={`h-[50%] w-full flex items-center flex-shrink-0
           ${gameSummary.length === 1 && "justify-center"}`}
       >
         <Carousel

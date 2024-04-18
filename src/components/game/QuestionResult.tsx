@@ -104,12 +104,12 @@ const QuestionResult = ({
       />
       <div
         dir="rtl"
-        className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full pb-2 flex-shrink-0"
+        className="flex justify-center items-center h-[50%] w-full pb-2 flex-shrink-0"
       >
         {!result || !result.length || !result[0]?.id ? (
           <div
             dir="rtl"
-            className="h-full aspect-square justify-center flex flex-col gap-4 bg-card rounded-lg p-2 border-2 border-card snap-center"
+            className="h-full w-full flex flex-col justify-center bg-card rounded-lg p-2 border-2 border-card"
           >
             <p>{"נראה שאף אחד לא הצביע..."}</p>
           </div>

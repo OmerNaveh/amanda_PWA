@@ -12,6 +12,7 @@ export enum PUBNUB_MESSAGE_TYPE {
   NEXT_RESULT = "next-result",
   END_GAME = "session-summary",
   BACK_TO_OPTIONS = "return-to-options",
+  ALL_ANSWERS_SUBMITTED = "all-answers-submitted",
 }
 export type PUBNUB_MESSAGE =
   | { type: PUBNUB_MESSAGE_TYPE.JOIN; user: User; users: User[] }
@@ -31,4 +32,5 @@ export type PUBNUB_MESSAGE =
     }
   | { type: PUBNUB_MESSAGE_TYPE.NEXT_RESULT; users: User[] }
   | { type: PUBNUB_MESSAGE_TYPE.END_GAME; users: User[] }
-  | { type: PUBNUB_MESSAGE_TYPE.BACK_TO_OPTIONS; users: User[] };
+  | { type: PUBNUB_MESSAGE_TYPE.BACK_TO_OPTIONS; users: User[] }
+  | { type: PUBNUB_MESSAGE_TYPE.ALL_ANSWERS_SUBMITTED };

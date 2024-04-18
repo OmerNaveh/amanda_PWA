@@ -31,7 +31,7 @@ const QuestionBoard = ({ question }: props) => {
         answerQuestion(session!.id, user!.id, question!.id, selection.id),
       {
         onSuccess: (data, selection) => {
-          setCurrentAnswerSelection(selection);
+          setCurrentAnswerSelection(selection); //TODO: Suspicious that cause re-render to the carousel
           setGameStatus(GAME_STATUS.WAITING_FOR_ANSWERS);
         },
         onError: (err) => {
@@ -78,7 +78,7 @@ const QuestionBoard = ({ question }: props) => {
     );
   };
   return (
-    <div className="flex flex-col gap-4 h-full">
+    <div className="flex flex-col h-full">
       <QuestionCard
         question={
           gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS || !question
@@ -96,26 +96,26 @@ const QuestionBoard = ({ question }: props) => {
       !!currentAnswerSelection ? (
         <div
           dir="rtl"
-          className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full flex-shrink-0 pb-2"
+          className="flex justify-center items-center h-[50%] w-full flex-shrink-0 pb-2"
         >
           <UserSlider user={currentAnswerSelection} />
         </div>
       ) : gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS && !question ? (
         <div
           dir="rtl"
-          className="flex justify-center items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full flex-shrink-0 pb-2"
+          className="flex justify-center items-center h-[50%] w-full flex-shrink-0 pb-2"
         >
           <Carousel
             cards={participents.map((participant) => (
               <UserSlider key={participant.id} user={participant} />
             ))}
-            className="w-full py-0"
+            className="w-full py-2"
           />
         </div>
       ) : (
         <div
           dir="rtl"
-          className={`flex gap-2 items-center snap-x snap-mandatory overflow-x-auto h-[50%] w-full flex-shrink-0 pb-2
+          className={`flex items-center h-[50%] w-full flex-shrink-0 pb-2
           ${participents.length === 1 && "justify-center"}`}
         >
           <Carousel
@@ -127,7 +127,7 @@ const QuestionBoard = ({ question }: props) => {
                 isLoading={loadingAnswerSelection}
               />
             ))}
-            className="w-full py-0"
+            className="w-full py-2"
           />
         </div>
       )}

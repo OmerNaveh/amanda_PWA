@@ -36,7 +36,7 @@ const UserSlider = ({
         ${
           !!onClick || !!isGameSummmary
             ? "h-[calc(100%-2.75rem-1rem)]"
-            : "aspect-square"
+            : "h-full"
         }`}
         style={{ backgroundColor: `rgb(${user.color})` }}
       >
