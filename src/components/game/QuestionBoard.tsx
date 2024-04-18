@@ -96,7 +96,7 @@ const QuestionBoard = ({ question }: props) => {
       !!currentAnswerSelection ? (
         <div
           dir="rtl"
-          className="flex justify-center items-center h-[50%] w-full flex-shrink-0 pb-2"
+          className="flex justify-center items-center h-[50%] w-full flex-shrink-0 py-2"
         >
           <UserSlider user={currentAnswerSelection} />
         </div>

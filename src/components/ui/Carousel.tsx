@@ -2,7 +2,7 @@ import { HTMLAttributes, useState } from "react";
 import { motion, useMotionValue } from "framer-motion";
 import { cn } from "lib/utils";
 
-const DRAG_BUFFER = 50;
+const DRAG_BUFFER = 20;
 
 const SPRING_OPTIONS = {
   type: "spring",
