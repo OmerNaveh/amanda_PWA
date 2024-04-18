@@ -30,6 +30,7 @@ const UserSlider = ({
       key={user.id}
       dir="rtl"
       className="h-full max-h-full w-full flex flex-col gap-4 bg-card rounded-lg p-2 border-2 border-card"
+      onClick={!!onClick ? () => onClick(user) : undefined}
     >
       <div
         className={`relative w-full mx-auto rounded-lg 
