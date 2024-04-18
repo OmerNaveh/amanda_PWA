@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { GAME_STATUS, Question } from "models/game";
 import { PUBNUB_MESSAGE, PUBNUB_MESSAGE_TYPE } from "models/pubnub";
 import { User } from "models/user";
-import usePubnub from "hooks/usePubnub";
 import { useAuthContext } from "context/AuthContext";
 import { useGameContext } from "context/GameContext";
 import ParticipentsBottomSheet from "components/game/ParticipentsBottomSheet";
@@ -13,7 +12,8 @@ import { useMutation } from "react-query";
 import { endGame } from "services/apiClient";
 import { useToast } from "components/ui/useToast";
 import { getErrorMessage } from "lib/errorHandling";
-import useSocket from "hooks/usePubnub";
+import useSocket from "hooks/useSocket";
+import useScreenChange from "hooks/useScreenChange";
 const PlayTime = lazy(() => import("components/game/PlayTime"));
 const GameResults = lazy(() => import("components/game/GameResults"));
 
@@ -32,10 +32,12 @@ const GameRoom = () => {
     setGameSummary,
     setQuestionCounter,
     resetGame,
+    resetAll,
   } = useGameContext();
   const { user } = useAuthContext();
   const navigate = useNavigate();
   const { toast } = useToast();
+  useScreenChange({ resetAll }); // Reset game when tab is closed or navigated away
 
   const handleMessage = useCallback((data: any) => {
     const pubnubData = data?.data as PUBNUB_MESSAGE;
@@ -110,7 +112,7 @@ const GameRoom = () => {
   if (!space || !user) return null;
   return (
     <div className="page-height w-full flex flex-col">
-      <div className="flex flex-col flex-shrink-0 text-center gap-4 px-4 h-[calc(100%-4rem)]">
+      <div className="h-[calc(100%-4rem)] flex flex-col flex-shrink-0 text-center px-4">
         <Suspense fallback={<LoaderCard />}>
           {gameStatus === GAME_STATUS.PRE_GAME ? (
             <WaitingRoom />
@@ -128,7 +130,7 @@ const GameRoom = () => {
       </div>
       {!!participents.length && (
         <ParticipentsBottomSheet
-          resetGame={resetGame}
+          resetAll={resetAll}
           finishGame={finishGame}
           loadingFinishGame={loadingFinishGame}
         />

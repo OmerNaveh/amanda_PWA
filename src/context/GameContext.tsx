@@ -26,6 +26,12 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setGameSummary([]);
     setQuestionCounter(0);
   };
+
+  const resetAll = () => {
+    setSpace(null);
+    setParticipents([]);
+    resetGame();
+  };
   return (
     <GlobalGameContext.Provider
       value={{
@@ -44,6 +50,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         setQuestionCounter,
         setGameSummary,
         resetGame,
+        resetAll,
       }}
     >
       {children}

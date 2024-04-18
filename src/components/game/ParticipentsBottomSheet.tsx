@@ -1,27 +1,27 @@
 import { useMemo, useState } from "react";
 import { Button } from "components/ui/Button";
-import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "context/AuthContext";
 import { useGameContext } from "context/GameContext";
 import { GAME_STATUS } from "models/game";
 import CircularProgress from "components/ui/CircularProgress";
 import DraggableDrawer from "components/ui/DraggableDrawer";
+import { useNavigate } from "react-router-dom";
 
 type props = {
   finishGame: () => void;
   loadingFinishGame: boolean;
-  resetGame: () => void;
+  resetAll: () => void;
 };
 const ParticipentsBottomSheet = ({
   finishGame,
   loadingFinishGame,
-  resetGame,
+  resetAll,
 }: props) => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
   const { user } = useAuthContext();
   const { participents, gameStatus, session } = useGameContext();
 
-  const navigate = useNavigate();
   const sortedParticipents = useMemo(
     () =>
       participents.sort((a, b) => {
@@ -32,7 +32,7 @@ const ParticipentsBottomSheet = ({
     [participents, user]
   );
   const handleExitGame = () => {
-    resetGame();
+    resetAll();
     navigate("/");
   };
   return (

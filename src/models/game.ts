@@ -39,4 +39,5 @@ export type GameContext = {
   setQuestionCounter: React.Dispatch<React.SetStateAction<number>>;
 
   resetGame: () => void;
+  resetAll: () => void;
 };
