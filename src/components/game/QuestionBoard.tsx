@@ -122,6 +122,7 @@ const QuestionBoard = ({ question }: props) => {
     );
   };
 
+  // Trigger Show result when everyone answered - only for admin
   useEffect(() => {
     if (
       !!hasEveryoneAnswered &&
@@ -132,6 +133,7 @@ const QuestionBoard = ({ question }: props) => {
       setHasEveryoneAnswered(false);
     }
   }, [hasEveryoneAnswered, gameStatus]);
+
   return (
     <div className="flex flex-col h-full">
       <QuestionCard
