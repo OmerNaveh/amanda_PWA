@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMutation } from "react-query";
 import { GAME_STATUS, Question } from "models/game";
 import { User } from "models/user";
@@ -22,16 +22,30 @@ const QuestionBoard = ({ question }: props) => {
   const [currentAnswerSelection, setCurrentAnswerSelection] =
     useState<User | null>(null);
   const { user } = useAuthContext();
-  const { participents, session, gameStatus, setGameStatus } = useGameContext();
+  const {
+    participents,
+    session,
+    gameStatus,
+    setGameStatus,
+    hasEveryoneAnswered,
+    setHasEveryoneAnswered,
+  } = useGameContext();
   const { toast } = useToast();
 
   const { mutate: TriggerSelectingAnswer, isLoading: loadingAnswerSelection } =
     useMutation(
-      (selection: User) =>
-        answerQuestion(session!.id, user!.id, question!.id, selection.id),
+      ({
+        selection,
+        userId,
+        questionId,
+      }: {
+        selection: User;
+        userId: number;
+        questionId: number;
+      }) => answerQuestion(session!.id, userId, questionId, selection.id),
       {
-        onSuccess: (data, selection) => {
-          setCurrentAnswerSelection(selection); //TODO: Suspicious that cause re-render to the carousel
+        onSuccess: (data, { selection }) => {
+          setCurrentAnswerSelection(selection);
           setGameStatus(GAME_STATUS.WAITING_FOR_ANSWERS);
         },
         onError: (err) => {
@@ -41,21 +55,51 @@ const QuestionBoard = ({ question }: props) => {
     );
 
   const { mutate: TriggerShowResult, isLoading: showAnswerResultLoading } =
-    useMutation(() => getQuestionResult(session!.id, question!.id), {
-      onError: (err) => {
-        toast({ title: getErrorMessage(err), variant: "destructive" });
-      },
-    });
+    useMutation(
+      ({ questionId }: { questionId: number }) =>
+        getQuestionResult(session!.id, questionId),
+      {
+        onError: (err) => {
+          toast({ title: getErrorMessage(err), variant: "destructive" });
+        },
+      }
+    );
 
-  const selectAnswer = (answer: User) => {
-    TriggerSelectingAnswer(answer);
-  };
+  const selectAnswer = useCallback(
+    (answer: User) => {
+      if (!!currentAnswerSelection) return;
+      if (!user || !question) {
+        toast({
+          description: "נראה שיש לנו בעיה, אנא נסה לצאת ולהיכנס שוב למשחק",
+          variant: "destructive",
+        });
+        return;
+      }
+      TriggerSelectingAnswer({
+        selection: answer,
+        userId: user.id,
+        questionId: question.id,
+      });
+    },
+    [user, question, loadingAnswerSelection]
+  );
 
-  const showResult = () => {
-    TriggerShowResult();
-  };
+  const showResult = useCallback(() => {
+    if (showAnswerResultLoading) return;
+    if (!question) {
+      toast({
+        description: "נראה שיש לנו בעיה, אנא נסה לצאת ולהיכנס שוב למשחק",
+        variant: "destructive",
+      });
+      return;
+    }
+    TriggerShowResult({ questionId: question.id });
+  }, [question, showAnswerResultLoading]);
 
-  const isAdmin = String(session?.adminId) === String(user?.id);
+  const isAdmin = useMemo(
+    () => String(session?.adminId) === String(user?.id),
+    [session, user]
+  );
   const renderCountdown = useCallback(() => {
     const onCountdownComplete = isAdmin ? showResult : () => {};
 
@@ -77,6 +121,17 @@ const QuestionBoard = ({ question }: props) => {
       </Button>
     );
   };
+
+  useEffect(() => {
+    if (
+      !!hasEveryoneAnswered &&
+      gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS &&
+      isAdmin
+    ) {
+      showResult();
+      setHasEveryoneAnswered(false);
+    }
+  }, [hasEveryoneAnswered, gameStatus]);
   return (
     <div className="flex flex-col h-full">
       <QuestionCard

@@ -38,6 +38,9 @@ export type GameContext = {
   questionCounter: number;
   setQuestionCounter: React.Dispatch<React.SetStateAction<number>>;
 
+  hasEveryoneAnswered: boolean;
+  setHasEveryoneAnswered: React.Dispatch<React.SetStateAction<boolean>>;
+
   resetGame: () => void;
   resetAll: () => void;
 };

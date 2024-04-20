@@ -31,6 +31,7 @@ const GameRoom = () => {
     setSelectedGameType,
     setGameSummary,
     setQuestionCounter,
+    setHasEveryoneAnswered,
     resetGame,
     resetAll,
   } = useGameContext();
@@ -87,6 +88,9 @@ const GameRoom = () => {
         break;
       case PUBNUB_MESSAGE_TYPE.BACK_TO_OPTIONS:
         resetGame();
+        break;
+      case PUBNUB_MESSAGE_TYPE.ALL_ANSWERS_SUBMITTED:
+        setHasEveryoneAnswered(true);
         break;
     }
   }, []);

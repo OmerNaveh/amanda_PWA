@@ -18,6 +18,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     GAME_STATUS.PRE_GAME
   );
   const [gameSummary, setGameSummary] = useState<User[]>([]);
+  const [hasEveryoneAnswered, setHasEveryoneAnswered] =
+    useState<boolean>(false);
 
   const resetGame = () => {
     setSession(null);
@@ -25,6 +27,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setGameStatus(GAME_STATUS.PRE_GAME);
     setGameSummary([]);
     setQuestionCounter(0);
+    setHasEveryoneAnswered(false);
   };
 
   const resetAll = () => {
@@ -51,6 +54,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         setGameSummary,
         resetGame,
         resetAll,
+        hasEveryoneAnswered,
+        setHasEveryoneAnswered,
       }}
     >
       {children}
