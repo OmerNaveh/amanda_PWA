@@ -13,6 +13,7 @@ export type Session = {
 };
 
 export enum GAME_STATUS {
+  WELCOME,
   PRE_GAME,
   SHOWING_QUESTION,
   WAITING_FOR_ANSWERS,

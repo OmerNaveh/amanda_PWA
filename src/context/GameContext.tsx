@@ -15,7 +15,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     null
   );
   const [gameStatus, setGameStatus] = useState<GAME_STATUS>(
-    GAME_STATUS.PRE_GAME
+    GAME_STATUS.WELCOME
   );
   const [gameSummary, setGameSummary] = useState<User[]>([]);
   const [hasEveryoneAnswered, setHasEveryoneAnswered] =
