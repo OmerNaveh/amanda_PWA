@@ -31,7 +31,7 @@ export const leaveSpace = async (userId: number) => {
 };
 
 export const getQuestionTypes = async () => {
-  const { data } = await apiClient.get(`category`);
+  const { data } = await apiClient.get(`question-type`);
   return data as QuestionTypeResponse;
 };
 
