@@ -64,7 +64,7 @@ const GameRoom = () => {
         setResult(null);
         setSession(pubnubData.session);
         setQuestion(pubnubData.question);
-        setSelectedGameType(pubnubData.category);
+        setSelectedGameType(pubnubData.questionType);
         setParticipents(pubnubData.users);
         setGameSummary([]);
         break;

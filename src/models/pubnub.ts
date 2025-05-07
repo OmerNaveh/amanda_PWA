@@ -21,7 +21,7 @@ export type PUBNUB_MESSAGE =
   | {
       type: PUBNUB_MESSAGE_TYPE.START_GAME;
       question: Question;
-      category: QuestionType;
+      questionType: QuestionType;
       session: Session;
       users: User[];
     }

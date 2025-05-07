@@ -43,7 +43,7 @@ export const startSession = async ({
   const { data } = await apiClient.post(`session`, {
     adminId: userId,
     spaceId,
-    categoryId: questionTypeId || 1,
+    questionTypeId: questionTypeId || 1,
   });
   return data;
 };
