@@ -6,6 +6,7 @@ import { GAME_STATUS } from "models/game";
 import CircularProgress from "components/ui/CircularProgress";
 import DraggableDrawer from "components/ui/DraggableDrawer";
 import { useNavigate } from "react-router-dom";
+import GradientButton from "components/ui/GradientButton";
 
 type props = {
   finishGame: () => void;
@@ -20,7 +21,7 @@ const ParticipentsBottomSheet = ({
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
   const { user } = useAuthContext();
-  const { participents, gameStatus, session } = useGameContext();
+  const { participents, gameStatus, session, space } = useGameContext();
 
   const sortedParticipents = useMemo(
     () =>
@@ -35,6 +36,23 @@ const ParticipentsBottomSheet = ({
     resetAll();
     navigate("/");
   };
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Join my Amanda game!",
+          text: `Join my "Who's Most Likely To" game: ${space?.id}`,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.log("Share failed:", err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+    }
+  };
+
   return (
     <>
       {!open && (
@@ -47,8 +65,8 @@ const ParticipentsBottomSheet = ({
           <div className="bg-white/10 rounded-full w-[calc(100%-8rem)] h-2 self-center" />
           <h4 dir="rtl" className="w-full font-bold my-auto text-base">
             {gameStatus === GAME_STATUS.PRE_GAME
-              ? `${participents.length} אנשים מוכנים לשחק`
-              : `${participents.length} אנשים במשחק`}
+              ? `${participents.length} משתתפים מוכנים לשחק`
+              : `${participents.length} משתתפים במשחק`}
           </h4>
         </div>
       )}
@@ -60,8 +78,8 @@ const ParticipentsBottomSheet = ({
       >
         <h4 dir="rtl" className="w-full font-bold text-center text-base">
           {gameStatus === GAME_STATUS.PRE_GAME
-            ? `${participents.length} אנשים מוכנים לשחק`
-            : `${participents.length} אנשים במשחק`}
+            ? `${participents.length} משתתפים מוכנים לשחק`
+            : `${participents.length} משתתפים במשחק`}
         </h4>
 
         <div className="flex flex-col gap-4 py-2 max-h-[80%] overflow-y-auto">
@@ -87,17 +105,22 @@ const ParticipentsBottomSheet = ({
 
         <div className="mt-auto flex flex-col gap-2 shrink-0">
           {String(user!.id) === String(session?.adminId) && (
-            <Button onClick={finishGame} disabled={!!loadingFinishGame}>
+            <GradientButton onClick={finishGame} disabled={!!loadingFinishGame}>
               {!!loadingFinishGame ? (
                 <CircularProgress />
               ) : (
                 <p>{"סיים משחק"}</p>
               )}
-            </Button>
+            </GradientButton>
           )}
-          <Button onClick={handleExitGame} className="bg-secondary">
+          <GradientButton
+            type="button"
+            variant="secondary"
+            onClick={handleExitGame}
+            className="bg-red-500/90 active:bg-red-500/60"
+          >
             {"צא מהמשחק"}
-          </Button>
+          </GradientButton>
         </div>
       </DraggableDrawer>
     </>

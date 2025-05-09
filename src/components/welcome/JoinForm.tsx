@@ -106,7 +106,7 @@ const JoinForm: React.FC<JoinFormProps> = ({
         dir="rtl"
       >
         {isLoading ? (
-          <CircularProgress />
+          <CircularProgress wrapperClassName="h-7" />
         ) : (
           <>
             <p>{"יאללה בלאגן"}</p>

@@ -36,21 +36,15 @@ const WaitingRoom = () => {
     mutate(gameType);
   };
   return (
-    <div className="flex flex-col text-center h-full">
+    <div className="flex-1 flex flex-col text-center">
       {loadingQuestionTypes ? (
         <LoaderCard />
-      ) : !!questionTypes ? (
+      ) : (
         <CategorySlider
           questionTypes={questionTypes}
           isLoading={isLoading}
           startGame={startGame}
         />
-      ) : (
-        <div className="h-full w-full flex justify-center items-center px-4">
-          <p className="text-center text-4xl">
-            {"נראה שמשהו השתבש, יאללה תלחצו על ריפרש"}
-          </p>
-        </div>
       )}
     </div>
   );

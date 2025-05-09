@@ -115,8 +115,8 @@ const GameRoom = () => {
 
   if (!space || !user) return null;
   return (
-    <div className="page-height w-full flex flex-col">
-      <div className="h-[calc(100%-4rem)] flex flex-col flex-shrink-0 text-center px-4">
+    <div className="flex flex-col flex-1">
+      <div className="flex-1 flex flex-col flex-shrink-0 text-center overflow-hidden">
         <Suspense fallback={<LoaderCard />}>
           {gameStatus === GAME_STATUS.PRE_GAME ? (
             <WaitingRoom />

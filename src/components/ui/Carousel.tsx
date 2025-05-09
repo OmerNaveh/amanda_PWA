@@ -32,7 +32,7 @@ const Carousel = ({ cards, className }: props) => {
   return (
     <div
       className={cn(
-        "relative overflow-hidden py-4 h-full flex flex-col gap-4",
+        "relative overflow-hidden py-4 flex-1 flex flex-col gap-4",
         className
       )}
     >
@@ -51,7 +51,7 @@ const Carousel = ({ cards, className }: props) => {
         }}
         transition={SPRING_OPTIONS}
         onDragEnd={onDragEnd}
-        className="h-[calc(100%-1.75rem)] flex cursor-grab items-center active:cursor-grabbing"
+        className="flex-1 flex cursor-grab active:cursor-grabbing"
       >
         {cards.map((card, idx) => {
           return (
@@ -73,18 +73,16 @@ type wrapperProps = {
 };
 const CardWrapper = ({ imgIndex, idx, children }: wrapperProps) => {
   return (
-    <>
-      <motion.div
-        key={idx}
-        animate={{
-          scale: imgIndex === idx ? 1 : 0.85,
-        }}
-        transition={SPRING_OPTIONS}
-        className="w-full h-full min-w-full"
-      >
-        {children}
-      </motion.div>
-    </>
+    <motion.div
+      key={idx}
+      animate={{
+        scale: imgIndex === idx ? 1 : 0.85,
+      }}
+      transition={SPRING_OPTIONS}
+      className="w-full h-full min-w-full"
+    >
+      {children}
+    </motion.div>
   );
 };
 type dotProps = {
@@ -104,7 +102,7 @@ const Dots = ({ imgIndex, setImgIndex, cards }: dotProps) => {
             key={idx}
             onClick={() => setImgIndex(idx)}
             className={`h-3 w-3 rounded-full transition-colors ${
-              idx === imgIndex ? "bg-neutral-50" : "bg-neutral-500"
+              idx === imgIndex ? "bg-white" : "bg-white/10"
             }`}
           />
         );

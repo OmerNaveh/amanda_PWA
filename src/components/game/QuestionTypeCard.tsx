@@ -1,5 +1,5 @@
-import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
+import GradientButton from "components/ui/GradientButton";
 import useIntersectionObserver from "hooks/useIntersectionObserver";
 import { QuestionType } from "models/responses";
 import { useRef } from "react";
@@ -19,23 +19,25 @@ const QuestionTypeCard = ({ questionType, isLoading, onClick }: props) => {
     <div
       ref={cardRef}
       key={questionType.id}
-      className="h-full w-full flex flex-col bg-card rounded-lg p-2 gap-2 border-2 border-card overflow-hidden"
+      className="h-full w-full flex flex-col bg-card rounded-lg p-2 xs:p-4 gap-2 sm:gap-3 md:gap-4 border-2 border-card overflow-hidden"
     >
-      <div className="relative h-[60%] w-full">
+      <div className="relative h-48 xs:h-56 sm:h-64 md:h-72 lg:h-80 w-full">
         <img
           src={questionType.picture}
-          alt="question type image"
+          alt="question type"
           className="h-full w-full object-cover rounded-lg"
         />
-        <h5 className="absolute bottom-0 left-0 right-0 bg-black/70 rounded-b-lg py-1 text-lg font-bold">
+        <h5 className="absolute bottom-0 left-0 right-0 bg-black/70 rounded-b-lg py-1 sm:py-1.5 md:py-2 text-base sm:text-lg md:text-xl font-bold text-center">
           {questionType.name}
         </h5>
       </div>
-      <p className="text-sm text-center text-white/80 line-clamp-4">
+      <p className="text-xs sm:text-sm md:text-base text-center text-white/80 line-clamp-3 sm:line-clamp-4 px-1 sm:px-2">
         {questionType.description}
       </p>
 
-      <Button
+      <GradientButton
+        variant="primary"
+        type="button"
         disabled={isLoading}
         onClick={() => {
           onClick(questionType);
@@ -45,13 +47,13 @@ const QuestionTypeCard = ({ questionType, isLoading, onClick }: props) => {
         }`}
       >
         {isLoading ? (
-          <CircularProgress />
+          <CircularProgress wrapperClassName="h-7" />
         ) : (
           <p className="text-xl font-semibold text-center tracking-wider">
             {"שחק"}
           </p>
         )}
-      </Button>
+      </GradientButton>
     </div>
   );
 };
