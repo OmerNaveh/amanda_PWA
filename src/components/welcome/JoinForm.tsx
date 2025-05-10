@@ -83,14 +83,14 @@ const JoinForm: React.FC<JoinFormProps> = ({
                 className={cn(
                   "w-11 h-11 rounded-full flex items-center justify-center border-2 transition-all",
                   colorSelection === color
-                    ? "border-white"
-                    : "border-transparent hover:border-white/50"
+                    ? "border-black"
+                    : "border-transparent hover:border-black/80"
                 )}
                 style={{ backgroundColor: `rgb(${colorSelection})` }}
                 aria-label={`Select color ${colorSelection}`}
               >
                 {colorSelection === color && (
-                  <CheckIcon className="w-5 h-5 text-white drop-shadow-md" />
+                  <CheckIcon className="w-5 h-5 text-black/70 drop-shadow-md" />
                 )}
               </motion.button>
             );

@@ -47,7 +47,7 @@ export default function GradientButton({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.96 }}
       className={cn(
-        "inline-flex items-center justify-center rounded-lg border border-white/30 bg-white/10 px-5 py-3 font-medium text-white backdrop-blur-sm active:bg-white/20 transition-all duration-300",
+        "inline-flex items-center justify-center rounded-lg border border-white/30 bg-white/10 px-5 py-3 font-medium text-white backdrop-blur-sm active:bg-white/20 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed",
         className
       )}
       {...props}

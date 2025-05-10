@@ -62,8 +62,7 @@
 }
 
 .page-height {
-  min-height: calc(100dvh - 57px);
-  height: auto;
+  height: calc(100dvh - 57px);
 }
 
 input:-webkit-autofill,

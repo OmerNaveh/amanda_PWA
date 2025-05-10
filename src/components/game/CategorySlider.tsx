@@ -1,6 +1,7 @@
 import QuestionTypeCard from "./QuestionTypeCard";
 import { QuestionType, QuestionTypeResponse } from "models/responses";
 import Carousel from "components/ui/Carousel";
+import CircularProgress from "components/ui/CircularProgress";
 
 type props = {
   questionTypes?: QuestionTypeResponse;
@@ -10,8 +11,11 @@ type props = {
 const CategorySlider = ({ questionTypes, isLoading, startGame }: props) => {
   if (!questionTypes?.length) {
     return (
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <h3 className="font-bold text-xl">{"טוען..."}</h3>
+      <div className="flex flex-col flex-1 justify-center items-center gap-4">
+        <h3 dir="rtl" className="font-bold text-xl">
+          {"טוען..."}
+        </h3>
+        <CircularProgress className="h-12 w-12" />
       </div>
     );
   }

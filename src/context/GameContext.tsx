@@ -3,10 +3,12 @@ import { QuestionType } from "models/responses";
 import { Space } from "models/space";
 import { User } from "models/user";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
+import { useAuthContext } from "./AuthContext";
 
 export const GlobalGameContext = createContext<GameContext>(null!);
 
 export const GameProvider = ({ children }: PropsWithChildren) => {
+  const { user } = useAuthContext();
   const [space, setSpace] = useState<Space | null>(null);
   const [participents, setParticipents] = useState<User[]>([]);
   const [session, setSession] = useState<Session | null>(null);
@@ -29,6 +31,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setQuestionCounter(0);
     setHasEveryoneAnswered(false);
   };
+
+  const isSessionAdmin =
+    !!session?.adminId &&
+    !!user?.id &&
+    String(session.adminId) === String(user.id);
 
   const resetAll = () => {
     setSpace(null);
@@ -56,6 +63,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         resetAll,
         hasEveryoneAnswered,
         setHasEveryoneAnswered,
+        isSessionAdmin,
       }}
     >
       {children}

@@ -19,9 +19,9 @@ const QuestionTypeCard = ({ questionType, isLoading, onClick }: props) => {
     <div
       ref={cardRef}
       key={questionType.id}
-      className="h-full w-full flex flex-col bg-card rounded-lg p-2 xs:p-4 gap-2 sm:gap-3 md:gap-4 border-2 border-card overflow-hidden"
+      className="h-full w-full mx-auto max-w-md flex flex-col bg-card rounded-lg p-2 xs:p-4 gap-2 xs:gap-4 border-2 border-card overflow-hidden"
     >
-      <div className="relative h-48 xs:h-56 sm:h-64 md:h-72 lg:h-80 w-full">
+      <div className="relative flex-[0.55] w-full">
         <img
           src={questionType.picture}
           alt="question type"
@@ -31,7 +31,7 @@ const QuestionTypeCard = ({ questionType, isLoading, onClick }: props) => {
           {questionType.name}
         </h5>
       </div>
-      <p className="text-xs sm:text-sm md:text-base text-center text-white/80 line-clamp-3 sm:line-clamp-4 px-1 sm:px-2">
+      <p className="text-sm sm:text-base text-center text-white/80 line-clamp-3 sm:line-clamp-4">
         {questionType.description}
       </p>
 
@@ -50,7 +50,7 @@ const QuestionTypeCard = ({ questionType, isLoading, onClick }: props) => {
           <CircularProgress wrapperClassName="h-7" />
         ) : (
           <p className="text-xl font-semibold text-center tracking-wider">
-            {"שחק"}
+            {"התחל"}
           </p>
         )}
       </GradientButton>

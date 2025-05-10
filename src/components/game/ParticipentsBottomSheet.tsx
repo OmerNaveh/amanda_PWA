@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Button } from "components/ui/Button";
+import { useMemo, useState, memo } from "react";
+import { motion } from "framer-motion";
 import { useAuthContext } from "context/AuthContext";
 import { useGameContext } from "context/GameContext";
 import { GAME_STATUS } from "models/game";
@@ -7,6 +7,9 @@ import CircularProgress from "components/ui/CircularProgress";
 import DraggableDrawer from "components/ui/DraggableDrawer";
 import { useNavigate } from "react-router-dom";
 import GradientButton from "components/ui/GradientButton";
+import { Share2 } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
+import IconButton from "components/ui/IconButton";
 
 type props = {
   finishGame: () => void;
@@ -21,11 +24,11 @@ const ParticipentsBottomSheet = ({
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
   const { user } = useAuthContext();
-  const { participents, gameStatus, session, space } = useGameContext();
+  const { participents, gameStatus, space, isSessionAdmin } = useGameContext();
 
   const sortedParticipents = useMemo(
     () =>
-      participents.sort((a, b) => {
+      [...participents].sort((a, b) => {
         if (a.id === user?.id) return -1;
         if (b.id === user?.id) return 1;
         return 0;
@@ -55,34 +58,48 @@ const ParticipentsBottomSheet = ({
 
   return (
     <>
-      {!open && (
-        <div
-          onClick={() => {
-            setOpen(true);
-          }}
-          className="h-full w-full bg-black/30 rounded-t-2xl shadow backdrop-blur text-center flex flex-col pt-2 active:opacity-60 cursor-pointer"
-        >
-          <div className="bg-white/10 rounded-full w-[calc(100%-8rem)] h-2 self-center" />
-          <h4 dir="rtl" className="w-full font-bold my-auto text-base">
-            {gameStatus === GAME_STATUS.PRE_GAME
-              ? `${participents.length} משתתפים מוכנים לשחק`
-              : `${participents.length} משתתפים במשחק`}
-          </h4>
-        </div>
-      )}
+      <AnimatePresence>
+        {!open && (
+          <motion.div
+            onClick={() => setOpen(true)}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="bg-gradient-to-r from-purple-900/80 to-indigo-900/80 py-3 px-4 rounded-lg shadow-lg flex flex-row justify-between items-center cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleShare();
+                }}
+              >
+                <Share2 size={18} />
+              </IconButton>
+            </div>
+            <h4 dir="rtl" className="font-bold text-base text-white">
+              {gameStatus === GAME_STATUS.PRE_GAME
+                ? `${participents.length} משתתפים מוכנים לשחק`
+                : `${participents.length} משתתפים במשחק`}
+            </h4>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <DraggableDrawer
         open={open}
         setOpen={() => {
           setOpen(false);
         }}
       >
-        <h4 dir="rtl" className="w-full font-bold text-center text-base">
+        <h4 dir="rtl" className="font-bold text-center text-base shrink-0">
           {gameStatus === GAME_STATUS.PRE_GAME
             ? `${participents.length} משתתפים מוכנים לשחק`
             : `${participents.length} משתתפים במשחק`}
         </h4>
 
-        <div className="flex flex-col gap-4 py-2 max-h-[80%] overflow-y-auto">
+        <div className="flex flex-col gap-4 py-2 min-h-0 flex-1 overflow-y-auto">
           {sortedParticipents.map((participent, index) => (
             <div
               dir="rtl"
@@ -103,13 +120,18 @@ const ParticipentsBottomSheet = ({
           ))}
         </div>
 
-        <div className="mt-auto flex flex-col gap-2 shrink-0">
-          {String(user!.id) === String(session?.adminId) && (
-            <GradientButton onClick={finishGame} disabled={!!loadingFinishGame}>
+        <div className="mt-auto pt-4 flex flex-col gap-4 shrink-0">
+          {isSessionAdmin && (
+            <GradientButton
+              variant="secondary"
+              onClick={finishGame}
+              disabled={!!loadingFinishGame}
+              className=" bg-white/40"
+            >
               {!!loadingFinishGame ? (
                 <CircularProgress />
               ) : (
-                <p>{"סיים משחק"}</p>
+                <p>{"לסיום המשחק"}</p>
               )}
             </GradientButton>
           )}
@@ -119,12 +141,11 @@ const ParticipentsBottomSheet = ({
             onClick={handleExitGame}
             className="bg-red-500/90 active:bg-red-500/60"
           >
-            {"צא מהמשחק"}
+            {"יציאה מהמשחק"}
           </GradientButton>
         </div>
       </DraggableDrawer>
     </>
   );
 };
-
-export default ParticipentsBottomSheet;
+export default memo(ParticipentsBottomSheet);

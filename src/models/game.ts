@@ -38,6 +38,7 @@ export type GameContext = {
   setGameSummary: React.Dispatch<React.SetStateAction<User[]>>;
   questionCounter: number;
   setQuestionCounter: React.Dispatch<React.SetStateAction<number>>;
+  isSessionAdmin: boolean;
 
   hasEveryoneAnswered: boolean;
   setHasEveryoneAnswered: React.Dispatch<React.SetStateAction<boolean>>;

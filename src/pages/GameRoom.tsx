@@ -1,7 +1,7 @@
 import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GAME_STATUS, Question } from "models/game";
-import { PUBNUB_MESSAGE, PUBNUB_MESSAGE_TYPE } from "models/pubnub";
+import { WS_MESSAGE, WS_MESSAGE_TYPE } from "models/ws";
 import { User } from "models/user";
 import { useAuthContext } from "context/AuthContext";
 import { useGameContext } from "context/GameContext";
@@ -41,55 +41,54 @@ const GameRoom = () => {
   useScreenChange({ resetAll }); // Reset game when tab is closed or navigated away
 
   const handleMessage = useCallback((data: any) => {
-    const pubnubData = data?.data as PUBNUB_MESSAGE;
+    const wsData = data?.data as WS_MESSAGE;
 
-    switch (pubnubData.type) {
-      case PUBNUB_MESSAGE_TYPE.JOIN:
-        if (user?.id === pubnubData.user.id || !pubnubData?.users?.length)
-          return;
-        setParticipents(pubnubData.users);
+    switch (wsData.type) {
+      case WS_MESSAGE_TYPE.JOIN:
+        if (user?.id === wsData.user.id || !wsData?.users?.length) return;
+        setParticipents(wsData.users);
         break;
-      case PUBNUB_MESSAGE_TYPE.LEAVE:
+      case WS_MESSAGE_TYPE.LEAVE:
         setParticipents((prev) => {
           if (!prev.length) return prev;
-          if (pubnubData.user.id === user?.id) return prev;
+          if (wsData.user.id === user?.id) return prev;
           return prev.filter(
-            (participent) => participent.id !== pubnubData.user.id
+            (participent) => participent.id !== wsData.user.id
           );
         });
         break;
-      case PUBNUB_MESSAGE_TYPE.START_GAME:
+      case WS_MESSAGE_TYPE.START_GAME:
         setGameStatus(GAME_STATUS.SHOWING_QUESTION);
         setQuestionCounter(1);
         setResult(null);
-        setSession(pubnubData.session);
-        setQuestion(pubnubData.question);
-        setSelectedGameType(pubnubData.questionType);
-        setParticipents(pubnubData.users);
+        setSession(wsData.session);
+        setQuestion(wsData.question);
+        setSelectedGameType(wsData.questionType);
+        setParticipents(wsData.users);
         setGameSummary([]);
         break;
-      case PUBNUB_MESSAGE_TYPE.END_GAME:
+      case WS_MESSAGE_TYPE.END_GAME:
         setQuestion(null);
         setResult(null);
         setSession(null);
         setGameStatus(GAME_STATUS.GAME_OVER);
-        setGameSummary(pubnubData.users);
+        setGameSummary(wsData.users);
         break;
-      case PUBNUB_MESSAGE_TYPE.NEXT_QUESTION:
+      case WS_MESSAGE_TYPE.NEXT_QUESTION:
         setQuestionCounter((prev) => prev + 1);
         setGameStatus(GAME_STATUS.SHOWING_QUESTION);
-        setParticipents(pubnubData.users);
+        setParticipents(wsData.users);
         setResult(null);
-        setQuestion(pubnubData.question);
+        setQuestion(wsData.question);
         break;
-      case PUBNUB_MESSAGE_TYPE.NEXT_RESULT:
-        setResult(pubnubData.users);
+      case WS_MESSAGE_TYPE.NEXT_RESULT:
+        setResult(wsData.users);
         setGameStatus(GAME_STATUS.SHOWING_RESULT);
         break;
-      case PUBNUB_MESSAGE_TYPE.BACK_TO_OPTIONS:
+      case WS_MESSAGE_TYPE.BACK_TO_OPTIONS:
         resetGame();
         break;
-      case PUBNUB_MESSAGE_TYPE.ALL_ANSWERS_SUBMITTED:
+      case WS_MESSAGE_TYPE.ALL_ANSWERS_SUBMITTED:
         setHasEveryoneAnswered(true);
         break;
     }

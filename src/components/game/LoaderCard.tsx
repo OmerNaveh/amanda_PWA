@@ -6,7 +6,7 @@ type props = {
 };
 const LoaderCard = ({ question }: props) => {
   return (
-    <div className="h-full w-full flex flex-col">
+    <div className="flex-1 flex flex-col">
       <QuestionCard question={question || "כבר מתחילים את הערב"} />
       <CircularProgress wrapperClassName="my-auto" className="h-12 w-12" />
     </div>
