@@ -1,4 +1,5 @@
 import { useMutation } from "react-query";
+import { motion } from "framer-motion";
 import { returnToOptions, startSession } from "services/apiClient";
 import { useGameContext } from "context/GameContext";
 import { useAuthContext } from "context/AuthContext";
@@ -49,7 +50,13 @@ const GameResults = () => {
     );
   };
   return (
-    <div className="flex flex-col gap-4 h-full">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+      className="flex flex-col gap-4 flex-1"
+    >
       <QuestionCard question={"תוצאות המשחק"} renderButtons={renderButtons} />
       <div
         dir="rtl"
@@ -69,7 +76,7 @@ const GameResults = () => {
           className="w-full py-0"
         />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

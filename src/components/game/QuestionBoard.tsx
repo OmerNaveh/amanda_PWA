@@ -29,6 +29,7 @@ const QuestionBoard = ({ question }: props) => {
     setGameStatus,
     hasEveryoneAnswered,
     setHasEveryoneAnswered,
+    isSessionAdmin,
   } = useGameContext();
   const { toast } = useToast();
 
@@ -96,12 +97,8 @@ const QuestionBoard = ({ question }: props) => {
     TriggerShowResult({ questionId: question.id });
   }, [question, showAnswerResultLoading]);
 
-  const isAdmin = useMemo(
-    () => String(session?.adminId) === String(user?.id),
-    [session, user]
-  );
   const renderCountdown = useCallback(() => {
-    const onCountdownComplete = isAdmin ? showResult : () => {};
+    const onCountdownComplete = isSessionAdmin ? showResult : () => {};
 
     return (
       <CountdownTimer
@@ -127,7 +124,7 @@ const QuestionBoard = ({ question }: props) => {
     if (
       !!hasEveryoneAnswered &&
       gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS &&
-      isAdmin
+      isSessionAdmin
     ) {
       showResult();
       setHasEveryoneAnswered(false);
@@ -144,7 +141,7 @@ const QuestionBoard = ({ question }: props) => {
         }
         renderCountdown={!!question ? renderCountdown : undefined}
         renderButtons={
-          gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS && !!isAdmin
+          gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS && !!isSessionAdmin
             ? rennderAdminButtons
             : undefined
         }

@@ -2,7 +2,13 @@ import { GAME_STATUS, GameContext, Session } from "models/game";
 import { QuestionType } from "models/responses";
 import { Space } from "models/space";
 import { User } from "models/user";
-import { createContext, PropsWithChildren, useContext, useState } from "react";
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 import { useAuthContext } from "./AuthContext";
 
 export const GlobalGameContext = createContext<GameContext>(null!);
@@ -23,25 +29,26 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [hasEveryoneAnswered, setHasEveryoneAnswered] =
     useState<boolean>(false);
 
-  const resetGame = () => {
+  const resetGame = useCallback(() => {
     setSession(null);
     setSelectedGameType(null);
     setGameStatus(GAME_STATUS.PRE_GAME);
     setGameSummary([]);
     setQuestionCounter(0);
     setHasEveryoneAnswered(false);
-  };
+  }, []);
 
   const isSessionAdmin =
     !!session?.adminId &&
     !!user?.id &&
     String(session.adminId) === String(user.id);
 
-  const resetAll = () => {
+  const resetAll = useCallback(() => {
     setSpace(null);
     setParticipents([]);
     resetGame();
-  };
+  }, [resetGame]);
+
   return (
     <GlobalGameContext.Provider
       value={{

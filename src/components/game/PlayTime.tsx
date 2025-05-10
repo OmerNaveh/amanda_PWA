@@ -1,4 +1,5 @@
 import { useMutation } from "react-query";
+import { motion } from "framer-motion";
 import { GAME_STATUS, Question } from "models/game";
 import { User } from "models/user";
 import { getNextQuestion } from "services/apiClient";
@@ -38,7 +39,13 @@ const PlayTime = ({
 
   if (!user) return null;
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+      className="flex flex-col gap-4 flex-1"
+    >
       {gameStatus !== GAME_STATUS.SHOWING_RESULT ? (
         <QuestionBoard question={question} />
       ) : (
@@ -48,11 +55,10 @@ const PlayTime = ({
           loadingNextQuestion={loadingNextQuestion}
           finishGame={finishGame}
           loadingFinishGame={loadingFinishGame}
-          isAdmin={String(session?.adminId) === String(user.id)}
           questionCounter={questionCounter}
         />
       )}
-    </>
+    </motion.div>
   );
 };
 

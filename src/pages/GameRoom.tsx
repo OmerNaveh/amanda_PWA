@@ -13,7 +13,7 @@ import { endGame } from "services/apiClient";
 import { useToast } from "components/ui/useToast";
 import { getErrorMessage } from "lib/errorHandling";
 import useSocket from "hooks/useSocket";
-import useScreenChange from "hooks/useScreenChange";
+import { AnimatePresence } from "framer-motion";
 const PlayTime = lazy(() => import("components/game/PlayTime"));
 const GameResults = lazy(() => import("components/game/GameResults"));
 
@@ -38,7 +38,6 @@ const GameRoom = () => {
   const { user } = useAuthContext();
   const navigate = useNavigate();
   const { toast } = useToast();
-  useScreenChange({ resetAll }); // Reset game when tab is closed or navigated away
 
   const handleMessage = useCallback((data: any) => {
     const wsData = data?.data as WS_MESSAGE;
@@ -92,43 +91,49 @@ const GameRoom = () => {
         setHasEveryoneAnswered(true);
         break;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { sendMessage } = useSocket({ handleMessage, channel: space?.channel });
+  useSocket({ handleMessage, channel: space?.channel });
+
   const { mutate: TriggerEndingGame, isLoading: loadingFinishGame } =
     useMutation(() => endGame(session!.id), {
       onError: (err) => {
         toast({ title: getErrorMessage(err), variant: "destructive" });
       },
     });
-  const finishGame = () => {
+
+  const finishGame = useCallback(() => {
     TriggerEndingGame();
-  };
+  }, [TriggerEndingGame]);
 
   useEffect(() => {
     if (!space || !user) {
       navigate("/");
       return;
     }
-  }, []);
+  }, [navigate, space, user]);
 
   if (!space || !user) return null;
   return (
     <div className="flex flex-col flex-1">
       <div className="flex-1 flex flex-col flex-shrink-0 text-center overflow-hidden">
         <Suspense fallback={<LoaderCard />}>
-          {gameStatus === GAME_STATUS.PRE_GAME ? (
-            <WaitingRoom />
-          ) : gameStatus === GAME_STATUS.GAME_OVER ? (
-            <GameResults />
-          ) : (
-            <PlayTime
-              question={question}
-              result={result}
-              finishGame={finishGame}
-              loadingFinishGame={loadingFinishGame}
-            />
-          )}
+          <AnimatePresence mode="wait">
+            {gameStatus === GAME_STATUS.PRE_GAME ? (
+              <WaitingRoom key={gameStatus} />
+            ) : gameStatus === GAME_STATUS.GAME_OVER ? (
+              <GameResults key={gameStatus} />
+            ) : (
+              <PlayTime
+                key={gameStatus}
+                question={question}
+                result={result}
+                finishGame={finishGame}
+                loadingFinishGame={loadingFinishGame}
+              />
+            )}
+          </AnimatePresence>
         </Suspense>
       </div>
       {!!participents.length && (

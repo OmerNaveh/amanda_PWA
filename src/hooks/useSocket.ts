@@ -28,7 +28,7 @@ const useSocket = ({ handleMessage, channel }: props) => {
         socketRef.current.disconnect();
       }
     };
-  }, [handleMessage, user?.id]);
+  }, [handleMessage, user?.id, channel]);
 
   const sendMessage = (message: string) => {
     if (socketRef.current) {

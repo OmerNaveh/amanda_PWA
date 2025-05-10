@@ -14,7 +14,6 @@ type props = {
   loadingNextQuestion: boolean;
   finishGame: () => void;
   loadingFinishGame: boolean;
-  isAdmin: boolean;
   questionCounter: number;
 };
 
@@ -27,12 +26,12 @@ const QuestionResult = ({
   loadingNextQuestion,
   finishGame,
   loadingFinishGame,
-  isAdmin,
+
   questionCounter,
 }: props) => {
   const [currentHighlight, setCurrentHighlight] = useState<number>(0);
   const [animationInProgress, setAnimationInProgress] = useState<boolean>(true);
-  const { participents: part } = useGameContext();
+  const { participents: part, isSessionAdmin } = useGameContext();
   const participents = useMemo(() => {
     return part;
   }, []);
@@ -100,7 +99,7 @@ const QuestionResult = ({
     <div className="flex flex-col gap-4 h-full">
       <QuestionCard
         question={"והזוכה הגדול הוא היא הם"}
-        renderButtons={isAdmin ? renderAdminButtons : undefined}
+        renderButtons={isSessionAdmin ? renderAdminButtons : undefined}
       />
       <div
         dir="rtl"

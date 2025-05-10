@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "react-query";
+import { motion } from "framer-motion";
 import { getQuestionTypes, startSession } from "services/apiClient";
 import CategorySlider from "./CategorySlider";
 import { useGameContext } from "context/GameContext";
@@ -36,7 +37,13 @@ const WaitingRoom = () => {
     mutate(gameType);
   };
   return (
-    <div className="flex-1 flex flex-col text-center">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+      className="flex-1 flex flex-col text-center"
+    >
       {loadingQuestionTypes ? (
         <LoaderCard />
       ) : (
@@ -46,7 +53,7 @@ const WaitingRoom = () => {
           startGame={startGame}
         />
       )}
-    </div>
+    </motion.div>
   );
 };
 

@@ -31,7 +31,7 @@ const JoinForm: React.FC<JoinFormProps> = ({
     <motion.form
       dir="rtl"
       onSubmit={handleStartGame}
-      className="py-8 flex flex-col gap-8"
+      className="py-8 flex flex-col gap-8 max-w-md mx-auto"
       initial={{ y: 50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: -30, opacity: 0 }}
