@@ -1,13 +1,14 @@
 import { useRef } from "react";
 import { Crown } from "lucide-react";
-import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
 import useIntersectionObserver from "hooks/useIntersectionObserver";
 import { User } from "models/user";
+import GradientButton from "components/ui/GradientButton";
 
 type props = {
   user: User;
   onClick?: (User: User) => void;
+  isActiveUser?: boolean;
   isGameSummmary?: boolean;
   isWinner?: boolean;
   isLoading?: boolean;
@@ -15,6 +16,7 @@ type props = {
 const UserSlider = ({
   user,
   onClick,
+  isActiveUser,
   isLoading,
   isGameSummmary,
   isWinner,
@@ -24,39 +26,41 @@ const UserSlider = ({
     root: null, // Observe intersection relative to the viewport
     threshold: 0.6, // 60% visibility
   });
+
   return (
     <div
       ref={cardRef}
       key={user.id}
       dir="rtl"
-      className="h-full max-h-full w-full flex flex-col gap-4 bg-card rounded-lg p-2 border-2 border-card"
-      onClick={!!onClick ? () => onClick(user) : undefined}
+      className="flex flex-col gap-4 bg-card rounded-lg p-4 border-2 border-card max-w-md mx-auto flex-1"
     >
-      <div
-        className={`relative w-full mx-auto rounded-lg 
-        ${
-          !!onClick || !!isGameSummmary
-            ? "h-[calc(100%-2.75rem-1rem)]"
-            : "h-full"
-        }`}
-        style={{ backgroundColor: `rgb(${user.color})` }}
-      >
-        <h5 className="absolute bottom-0 left-0 right-0 py-1 text-lg bg-black/60 font-bold rounded-b-lg">
-          {user.name}
-        </h5>
+      <div className="relative mx-auto flex items-center justify-center">
+        <div
+          className="w-24 h-24 rounded-full"
+          style={{ backgroundColor: `rgb(${user.color})` }}
+        />
+        {isActiveUser && (
+          <div className="absolute bg-black/10 p-2 text-white text-sm rounded-full animate-pulse">
+            אני
+          </div>
+        )}
       </div>
+      <p dir="rtl" className="font-medium text-lg truncate mx-auto w-full">
+        {user.name}
+      </p>
+
       {isGameSummmary && (
-        <div dir="rtl" className="mt-auto flex flex-col gap-1">
+        <div dir="rtl" className="flex flex-col gap-1">
           {isWinner && (
             <div className="flex justify-center">
-              <Crown className="h-4 w-4" />
+              <Crown className="h-5 w-5 fill-yellow-400" />
             </div>
           )}
-          <p> {user?.score || 0} נק׳</p>
+          <p className="font-semibold text-lg"> {user?.score || 0} נק׳</p>
         </div>
       )}
       {!!onClick && (
-        <Button
+        <GradientButton
           disabled={isLoading}
           onClick={() => {
             onClick(user);
@@ -70,7 +74,7 @@ const UserSlider = ({
           ) : (
             <p className="font-semibold text-center tracking-wider">{"בחר"}</p>
           )}
-        </Button>
+        </GradientButton>
       )}
     </div>
   );

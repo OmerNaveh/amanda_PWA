@@ -1,11 +1,11 @@
 import { useMutation } from "react-query";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { GAME_STATUS, Question } from "models/game";
 import { User } from "models/user";
 import { getNextQuestion } from "services/apiClient";
 import { useToast } from "components/ui/useToast";
 import { useAuthContext } from "context/AuthContext";
-import { useGameContext } from "context/GameContext";
+import { useGameStore } from "store/gameStore";
 import { getErrorMessage } from "lib/errorHandling";
 import QuestionBoard from "./QuestionBoard";
 import QuestionResult from "./QuestionResult";
@@ -23,7 +23,10 @@ const PlayTime = ({
   loadingFinishGame,
 }: props) => {
   const { user } = useAuthContext();
-  const { session, questionCounter, gameStatus } = useGameContext();
+  const session = useGameStore((state) => state.session);
+  const questionCounter = useGameStore((state) => state.questionCounter);
+  const gameStatus = useGameStore((state) => state.gameStatus);
+
   const { toast } = useToast();
 
   const { mutate: TriggerNextQuestion, isLoading: loadingNextQuestion } =
@@ -44,20 +47,23 @@ const PlayTime = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      className="flex flex-col gap-4 flex-1"
+      className="flex flex-col flex-1"
     >
-      {gameStatus !== GAME_STATUS.SHOWING_RESULT ? (
-        <QuestionBoard question={question} />
-      ) : (
-        <QuestionResult
-          result={result}
-          showNextQuestion={nextQuestion}
-          loadingNextQuestion={loadingNextQuestion}
-          finishGame={finishGame}
-          loadingFinishGame={loadingFinishGame}
-          questionCounter={questionCounter}
-        />
-      )}
+      <AnimatePresence>
+        {gameStatus !== GAME_STATUS.SHOWING_RESULT ? (
+          <QuestionBoard key={gameStatus} question={question} />
+        ) : (
+          <QuestionResult
+            key={gameStatus}
+            result={result}
+            showNextQuestion={nextQuestion}
+            loadingNextQuestion={loadingNextQuestion}
+            finishGame={finishGame}
+            loadingFinishGame={loadingFinishGame}
+            questionCounter={questionCounter}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

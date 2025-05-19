@@ -1,17 +1,22 @@
+import { useCallback } from "react";
 import { useMutation } from "react-query";
 import { motion } from "framer-motion";
 import { returnToOptions, startSession } from "services/apiClient";
-import { useGameContext } from "context/GameContext";
+import { useGameStore } from "store/gameStore";
 import { useAuthContext } from "context/AuthContext";
-import QuestionCard from "./QuestionCard";
 import UserSlider from "./UserSlider";
-import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
 import Carousel from "components/ui/Carousel";
+import GradientButton from "components/ui/GradientButton";
 
 const GameResults = () => {
-  const { selectedGameType, gameSummary, resetGame, space } = useGameContext();
+  const selectedGameType = useGameStore((state) => state.selectedGameType);
+  const gameSummary = useGameStore((state) => state.gameSummary);
+  const resetGame = useGameStore((state) => state.resetGame);
+  const space = useGameStore((state) => state.space);
+
   const { user } = useAuthContext();
+
   const { mutate, isLoading } = useMutation(
     () =>
       startSession({
@@ -31,24 +36,15 @@ const GameResults = () => {
         resetGame();
       },
     });
-  const playNewGame = async () => {
+
+  const playNewGame = useCallback(async () => {
     mutate();
-  };
-  const viewOtherGames = () => {
+  }, [mutate]);
+
+  const viewOtherGames = useCallback(() => {
     backToOptions();
-  };
-  const renderButtons = () => {
-    return (
-      <>
-        <Button onClick={playNewGame} disabled={isLoading}>
-          {isLoading ? <CircularProgress /> : "עוד הפעם"}
-        </Button>
-        <Button onClick={viewOtherGames} disabled={loadingBackToOptions}>
-          {loadingBackToOptions ? <CircularProgress /> : "לבחירת משחק"}
-        </Button>
-      </>
-    );
-  };
+  }, [backToOptions]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -57,10 +53,11 @@ const GameResults = () => {
       transition={{ duration: 0.3 }}
       className="flex flex-col gap-4 flex-1"
     >
-      <QuestionCard question={"תוצאות המשחק"} renderButtons={renderButtons} />
+      <h3 className="font-bold text-xl">{"תוצאות המשחק"}</h3>
+
       <div
         dir="rtl"
-        className={`h-[50%] w-full flex items-center flex-shrink-0
+        className={`flex shrink-0
           ${gameSummary.length === 1 && "justify-center"}`}
       >
         <Carousel
@@ -68,13 +65,32 @@ const GameResults = () => {
             <UserSlider
               key={participant.id}
               user={participant}
+              isActiveUser={user?.id === participant.id}
               isLoading={isLoading}
               isWinner={index === 0}
               isGameSummmary
             />
           ))}
-          className="w-full py-0"
+          className="w-full h-full py-0 shrink-0"
         />
+      </div>
+
+      <div className="flex mt-auto justify-between gap-4 w-full">
+        <GradientButton
+          variant="secondary"
+          className="w-full"
+          onClick={viewOtherGames}
+          disabled={loadingBackToOptions}
+        >
+          {loadingBackToOptions ? <CircularProgress /> : "נחליף סגנון"}
+        </GradientButton>
+        <GradientButton
+          onClick={playNewGame}
+          className="w-full"
+          disabled={isLoading}
+        >
+          {isLoading ? <CircularProgress /> : "עוד סיבוב"}
+        </GradientButton>
       </div>
     </motion.div>
   );

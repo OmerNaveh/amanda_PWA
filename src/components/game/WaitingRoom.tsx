@@ -2,15 +2,20 @@ import { useMutation, useQuery } from "react-query";
 import { motion } from "framer-motion";
 import { getQuestionTypes, startSession } from "services/apiClient";
 import CategorySlider from "./CategorySlider";
-import { useGameContext } from "context/GameContext";
+import { useGameStore } from "store/gameStore";
 import { useAuthContext } from "context/AuthContext";
-import LoaderCard from "./LoaderCard";
 import { QuestionType } from "models/responses";
 import { useToast } from "components/ui/useToast";
 import { getErrorMessage } from "lib/errorHandling";
+import { useCallback } from "react";
+import Loader from "./Loader";
 
 const WaitingRoom = () => {
-  const { space, setSelectedGameType } = useGameContext();
+  const space = useGameStore((state) => state.space);
+  const setSelectedGameType = useGameStore(
+    (state) => state.setSelectedGameType
+  );
+
   const { user } = useAuthContext();
   const { toast } = useToast();
   const { data: questionTypes, isLoading: loadingQuestionTypes } = useQuery({
@@ -33,9 +38,14 @@ const WaitingRoom = () => {
       },
     }
   );
-  const startGame = (gameType: QuestionType) => {
-    mutate(gameType);
-  };
+
+  const startGame = useCallback(
+    (gameType: QuestionType) => {
+      mutate(gameType);
+    },
+    [mutate]
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -45,7 +55,7 @@ const WaitingRoom = () => {
       className="flex-1 flex flex-col text-center"
     >
       {loadingQuestionTypes ? (
-        <LoaderCard />
+        <Loader />
       ) : (
         <CategorySlider
           questionTypes={questionTypes}

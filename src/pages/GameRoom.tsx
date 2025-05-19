@@ -4,37 +4,44 @@ import { GAME_STATUS, Question } from "models/game";
 import { WS_MESSAGE, WS_MESSAGE_TYPE } from "models/ws";
 import { User } from "models/user";
 import { useAuthContext } from "context/AuthContext";
-import { useGameContext } from "context/GameContext";
+// Replace GameContext import with Zustand store
+import { useGameStore } from "store/gameStore";
 import ParticipentsBottomSheet from "components/game/ParticipentsBottomSheet";
 import WaitingRoom from "components/game/WaitingRoom";
-import LoaderCard from "components/game/LoaderCard";
 import { useMutation } from "react-query";
 import { endGame } from "services/apiClient";
 import { useToast } from "components/ui/useToast";
 import { getErrorMessage } from "lib/errorHandling";
 import useSocket from "hooks/useSocket";
 import { AnimatePresence } from "framer-motion";
+import Loader from "components/game/Loader";
 const PlayTime = lazy(() => import("components/game/PlayTime"));
 const GameResults = lazy(() => import("components/game/GameResults"));
 
 const GameRoom = () => {
   const [question, setQuestion] = useState<Question | null>(null);
   const [result, setResult] = useState<User[] | null>(null);
-  const {
-    space,
-    participents,
-    setParticipents,
-    session,
-    setSession,
-    gameStatus,
-    setGameStatus,
-    setSelectedGameType,
-    setGameSummary,
-    setQuestionCounter,
-    setHasEveryoneAnswered,
-    resetGame,
-    resetAll,
-  } = useGameContext();
+
+  // Use individual selectors from Zustand instead of destructuring the whole context
+  // This ensures components only re-render when their specific dependencies change
+  const space = useGameStore((state) => state.space);
+  const participents = useGameStore((state) => state.participents);
+  const setParticipents = useGameStore((state) => state.setParticipents);
+  const session = useGameStore((state) => state.session);
+  const setSession = useGameStore((state) => state.setSession);
+  const gameStatus = useGameStore((state) => state.gameStatus);
+  const setGameStatus = useGameStore((state) => state.setGameStatus);
+  const setSelectedGameType = useGameStore(
+    (state) => state.setSelectedGameType
+  );
+  const setGameSummary = useGameStore((state) => state.setGameSummary);
+  const setQuestionCounter = useGameStore((state) => state.setQuestionCounter);
+  const setHasEveryoneAnswered = useGameStore(
+    (state) => state.setHasEveryoneAnswered
+  );
+  const resetGame = useGameStore((state) => state.resetGame);
+  const resetAll = useGameStore((state) => state.resetAll);
+
   const { user } = useAuthContext();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -116,9 +123,9 @@ const GameRoom = () => {
 
   if (!space || !user) return null;
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 gap-4">
       <div className="flex-1 flex flex-col flex-shrink-0 text-center overflow-hidden">
-        <Suspense fallback={<LoaderCard />}>
+        <Suspense fallback={<Loader />}>
           <AnimatePresence mode="wait">
             {gameStatus === GAME_STATUS.PRE_GAME ? (
               <WaitingRoom key={gameStatus} />

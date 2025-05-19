@@ -1,11 +1,11 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Header from "components/header/Header";
-import { useGameContext } from "context/GameContext";
 import { GAME_STATUS } from "models/game";
+import { useGameStore } from "store/gameStore";
 
 const Layout = () => {
-  const { gameStatus } = useGameContext();
+  const gameStatus = useGameStore((state) => state.gameStatus);
 
   const showHeader = gameStatus !== GAME_STATUS.WELCOME;
 
@@ -17,8 +17,7 @@ const Layout = () => {
       <main
         className="flex-1 flex flex-col p-4 transition-all"
         style={{
-          paddingTop: showHeader ? "1rem" : "0",
-          minHeight: showHeader ? "calc(100dvh - 57px)" : "100dvh",
+          height: showHeader ? "calc(100dvh - 57px)" : "100dvh",
           WebkitOverflowScrolling: "touch",
         }}
       >

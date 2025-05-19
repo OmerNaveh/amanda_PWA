@@ -7,7 +7,7 @@ import { extractRGB } from "lib/colorHandling";
 import { getErrorMessage } from "lib/errorHandling";
 import { CreateOrJoinSpaceRequest } from "models/requests";
 import { createSpace } from "services/apiClient";
-import { useGameContext } from "context/GameContext";
+import { useGameStore } from "store/gameStore";
 import { useAuthContext } from "context/AuthContext";
 import { GAME_STATUS } from "models/game";
 import WelcomeSection from "components/welcome/WelcomeSection";
@@ -19,7 +19,11 @@ const HomePage = () => {
   const amandaIdRef = React.useRef<HTMLInputElement>(null);
   const nicknameRef = React.useRef<HTMLInputElement>(null);
   const [step, setStep] = useState<Step>("welcome");
-  const { setSpace, setParticipents, setGameStatus } = useGameContext();
+
+  const setSpace = useGameStore((state) => state.setSpace);
+  const setParticipents = useGameStore((state) => state.setParticipents);
+  const setGameStatus = useGameStore((state) => state.setGameStatus);
+
   const { setUser } = useAuthContext();
   const { toast } = useToast();
   const navigate = useNavigate();

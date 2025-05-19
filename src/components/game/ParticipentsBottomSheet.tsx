@@ -1,14 +1,13 @@
 import { useMemo, useState, memo } from "react";
 import { motion } from "framer-motion";
 import { useAuthContext } from "context/AuthContext";
-import { useGameContext } from "context/GameContext";
+import { useGameStore } from "store/gameStore";
 import { GAME_STATUS } from "models/game";
 import CircularProgress from "components/ui/CircularProgress";
 import DraggableDrawer from "components/ui/DraggableDrawer";
 import { useNavigate } from "react-router-dom";
 import GradientButton from "components/ui/GradientButton";
 import { Share2 } from "lucide-react";
-import { AnimatePresence } from "framer-motion";
 import IconButton from "components/ui/IconButton";
 
 type props = {
@@ -24,7 +23,13 @@ const ParticipentsBottomSheet = ({
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
   const { user } = useAuthContext();
-  const { participents, gameStatus, space, isSessionAdmin } = useGameContext();
+
+  const participents = useGameStore((state) => state.participents);
+  const gameStatus = useGameStore((state) => state.gameStatus);
+  const space = useGameStore((state) => state.space);
+
+  const getIsSessionAdmin = useGameStore((state) => state.getIsSessionAdmin);
+  const isSessionAdmin = getIsSessionAdmin(user?.id);
 
   const sortedParticipents = useMemo(
     () =>
@@ -58,34 +63,32 @@ const ParticipentsBottomSheet = ({
 
   return (
     <>
-      <AnimatePresence>
-        {!open && (
-          <motion.div
-            onClick={() => setOpen(true)}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="bg-gradient-to-r from-purple-900/80 to-indigo-900/80 py-3 px-4 rounded-lg shadow-lg flex flex-row justify-between items-center cursor-pointer"
+      <motion.div
+        onClick={() => setOpen(true)}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.96 }}
+        exit={{ opacity: 0, y: 10 }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+        className="bg-gradient-to-r from-purple-900/80 to-indigo-900/80 py-3 px-4 rounded-lg shadow-lg flex flex-row justify-between items-center cursor-pointer max-w-md mx-auto w-full"
+      >
+        <div className="flex items-center gap-2">
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              handleShare();
+            }}
           >
-            <div className="flex items-center gap-2">
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleShare();
-                }}
-              >
-                <Share2 size={18} />
-              </IconButton>
-            </div>
-            <h4 dir="rtl" className="font-bold text-base text-white">
-              {gameStatus === GAME_STATUS.PRE_GAME
-                ? `${participents.length} משתתפים מוכנים לשחק`
-                : `${participents.length} משתתפים במשחק`}
-            </h4>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <Share2 size={18} />
+          </IconButton>
+        </div>
+        <h4 dir="rtl" className="font-bold text-base text-white">
+          {gameStatus === GAME_STATUS.PRE_GAME
+            ? `${participents.length} משתתפים מוכנים לשחק`
+            : `${participents.length} משתתפים במשחק`}
+        </h4>
+      </motion.div>
 
       <DraggableDrawer
         open={open}

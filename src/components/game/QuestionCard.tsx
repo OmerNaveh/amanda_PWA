@@ -1,7 +1,7 @@
 import { HTMLProps, ReactNode } from "react";
 import { cn } from "lib/utils";
 import { TOTAL_QUESTIONS } from "constants/gameRules";
-import { useGameContext } from "context/GameContext";
+import { useGameStore } from "store/gameStore";
 
 type props = {
   question: string;
@@ -15,12 +15,14 @@ const QuestionCard = ({
   renderButtons,
   renderCountdown,
 }: props) => {
-  const { selectedGameType, questionCounter } = useGameContext();
+  const selectedGameType = useGameStore((state) => state.selectedGameType);
+  const questionCounter = useGameStore((state) => state.questionCounter);
+
   return (
     <div
       dir="rtl"
       className={cn(
-        "h-[50%] bg-card border-[1.5px] border-card bg-blend-overlay p-4 rounded-2xl flex flex-col gap-2 relative",
+        "flex-1 shrink-0 bg-card border-[1.5px] border-card bg-blend-overlay p-4 rounded-2xl flex flex-col gap-2 relative max-w-md mx-auto w-full",
         className
       )}
     >
@@ -35,14 +37,11 @@ const QuestionCard = ({
         </div>
       )}
 
-      <h3 className="text-2xl font-bold text-center line-clamp-3">
+      <h3 className="text-2xl font-bold text-center line-clamp-3 my-auto">
         {question}
       </h3>
       {!!renderButtons && (
-        <div
-          className="flex mt-auto justify-between px-4 gap-4 w-full"
-          dir="rtl"
-        >
+        <div className="flex mt-auto justify-between gap-4 w-full" dir="rtl">
           {renderButtons()}
         </div>
       )}

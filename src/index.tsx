@@ -7,7 +7,6 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Toaster } from "components/ui/toaster";
 import { AuthProvider } from "context/AuthContext";
-import { GameProvider } from "context/GameContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -16,6 +15,7 @@ const root = ReactDOM.createRoot(
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      staleTime: 1000 * 60 * 15, // 15 minutes
       retry: 1,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
@@ -29,9 +29,7 @@ root.render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
-          <GameProvider>
-            <App />
-          </GameProvider>
+          <App />
         </AuthProvider>
         <Toaster />
       </BrowserRouter>

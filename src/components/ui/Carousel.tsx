@@ -32,7 +32,7 @@ const Carousel = ({ cards, className }: props) => {
   return (
     <div
       className={cn(
-        "relative overflow-hidden py-4 flex-1 flex flex-col gap-4",
+        "relative overflow-hidden flex-1 flex flex-col gap-4",
         className
       )}
     >

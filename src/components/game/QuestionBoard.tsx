@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { useMutation } from "react-query";
 import { GAME_STATUS, Question } from "models/game";
 import { User } from "models/user";
@@ -6,13 +7,13 @@ import QuestionCard from "./QuestionCard";
 import UserSlider from "./UserSlider";
 import CountdownTimer from "./CountdownTimer";
 import { useAuthContext } from "context/AuthContext";
-import { useGameContext } from "context/GameContext";
 import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
 import { answerQuestion, getQuestionResult } from "services/apiClient";
 import { getErrorMessage } from "lib/errorHandling";
 import { useToast } from "components/ui/useToast";
 import Carousel from "components/ui/Carousel";
+import { useGameStore } from "store/gameStore";
 type props = {
   question?: Question | null;
 };
@@ -22,15 +23,19 @@ const QuestionBoard = ({ question }: props) => {
   const [currentAnswerSelection, setCurrentAnswerSelection] =
     useState<User | null>(null);
   const { user } = useAuthContext();
-  const {
-    participents,
-    session,
-    gameStatus,
-    setGameStatus,
-    hasEveryoneAnswered,
-    setHasEveryoneAnswered,
-    isSessionAdmin,
-  } = useGameContext();
+
+  const participents = useGameStore((state) => state.participents);
+  const session = useGameStore((state) => state.session);
+  const gameStatus = useGameStore((state) => state.gameStatus);
+  const setGameStatus = useGameStore((state) => state.setGameStatus);
+  const hasEveryoneAnswered = useGameStore(
+    (state) => state.hasEveryoneAnswered
+  );
+  const setHasEveryoneAnswered = useGameStore(
+    (state) => state.setHasEveryoneAnswered
+  );
+  const getIsSessionAdmin = useGameStore((state) => state.getIsSessionAdmin);
+  const isSessionAdmin = getIsSessionAdmin(user?.id);
   const { toast } = useToast();
 
   const { mutate: TriggerSelectingAnswer, isLoading: loadingAnswerSelection } =
@@ -68,7 +73,7 @@ const QuestionBoard = ({ question }: props) => {
 
   const selectAnswer = useCallback(
     (answer: User) => {
-      if (!!currentAnswerSelection) return;
+      if (currentAnswerSelection) return;
       if (!user || !question) {
         toast({
           description: "נראה שיש לנו בעיה, אנא נסה לצאת ולהיכנס שוב למשחק",
@@ -76,13 +81,14 @@ const QuestionBoard = ({ question }: props) => {
         });
         return;
       }
+
       TriggerSelectingAnswer({
         selection: answer,
         userId: user.id,
         questionId: question.id,
       });
     },
-    [user, question, loadingAnswerSelection]
+    [currentAnswerSelection, user, question, TriggerSelectingAnswer, toast]
   );
 
   const showResult = useCallback(() => {
@@ -94,8 +100,9 @@ const QuestionBoard = ({ question }: props) => {
       });
       return;
     }
+
     TriggerShowResult({ questionId: question.id });
-  }, [question, showAnswerResultLoading]);
+  }, [TriggerShowResult, question, showAnswerResultLoading, toast]);
 
   const renderCountdown = useCallback(() => {
     const onCountdownComplete = isSessionAdmin ? showResult : () => {};
@@ -106,7 +113,8 @@ const QuestionBoard = ({ question }: props) => {
         onCountdownComplete={onCountdownComplete}
       />
     );
-  }, [gameStatus]);
+  }, [isSessionAdmin, showResult]);
+
   const rennderAdminButtons = () => {
     return (
       <Button
@@ -122,17 +130,29 @@ const QuestionBoard = ({ question }: props) => {
   // Trigger Show result when everyone answered - only for admin
   useEffect(() => {
     if (
-      !!hasEveryoneAnswered &&
+      hasEveryoneAnswered &&
       gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS &&
       isSessionAdmin
     ) {
       showResult();
       setHasEveryoneAnswered(false);
     }
-  }, [hasEveryoneAnswered, gameStatus]);
+  }, [
+    hasEveryoneAnswered,
+    gameStatus,
+    isSessionAdmin,
+    showResult,
+    setHasEveryoneAnswered,
+  ]);
 
   return (
-    <div className="flex flex-col h-full">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+      className="flex flex-col flex-1 gap-4"
+    >
       <QuestionCard
         question={
           gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS || !question
@@ -146,30 +166,30 @@ const QuestionBoard = ({ question }: props) => {
             : undefined
         }
       />
+
       {gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS &&
       !!currentAnswerSelection ? (
         <div
           dir="rtl"
-          className="flex justify-center items-center h-[50%] w-full flex-shrink-0 py-2"
+          className="flex justify-center items-center w-full flex-shrink-0"
         >
           <UserSlider user={currentAnswerSelection} />
         </div>
       ) : gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS && !question ? (
         <div
           dir="rtl"
-          className="flex justify-center items-center h-[50%] w-full flex-shrink-0 pb-2"
+          className="flex justify-center items-center w-full flex-shrink-0"
         >
           <Carousel
             cards={participents.map((participant) => (
               <UserSlider key={participant.id} user={participant} />
             ))}
-            className="w-full py-2"
           />
         </div>
       ) : (
         <div
           dir="rtl"
-          className={`flex items-center h-[50%] w-full flex-shrink-0 pb-2
+          className={`flex flex-col w-full flex-shrink-0
           ${participents.length === 1 && "justify-center"}`}
         >
           <Carousel
@@ -185,7 +205,7 @@ const QuestionBoard = ({ question }: props) => {
           />
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

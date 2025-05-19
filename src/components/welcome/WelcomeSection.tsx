@@ -70,7 +70,7 @@ const WelcomeSection = ({ handleWelcomePageClick }: WelcomeSectionProps) => {
             dir="rtl"
           >
             המשחק האולטימטיבי של "מי הכי סביר ש..." שישדרג כל מסיבה, יצחיק בלי
-            סוף, יפתיע את כולם – וייצור רגעים שייזכרו לכל החיים!
+            סוף, יפתיע את כולם – וייצור רגעים שתזכרו לתקופה!
           </motion.p>
         </motion.div>
 
