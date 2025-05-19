@@ -13,7 +13,7 @@ import { answerQuestion, getQuestionResult } from "services/apiClient";
 import { getErrorMessage } from "lib/errorHandling";
 import { useToast } from "components/ui/useToast";
 import Carousel from "components/ui/Carousel";
-import { useGameStore } from "store/gameStore";
+import { useGameStore } from "context/gameStore";
 type props = {
   question?: Question | null;
 };

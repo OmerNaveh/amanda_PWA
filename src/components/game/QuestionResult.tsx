@@ -5,7 +5,7 @@ import { TOTAL_QUESTIONS } from "constants/gameRules";
 import { useAuthContext } from "context/AuthContext";
 import { User } from "models/user";
 import { useEffect, useState } from "react";
-import { useGameStore } from "store/gameStore";
+import { useGameStore } from "context/gameStore";
 import QuestionCard from "./QuestionCard";
 import UserSlider from "./UserSlider";
 

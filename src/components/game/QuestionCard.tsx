@@ -1,7 +1,7 @@
 import { HTMLProps, ReactNode } from "react";
 import { cn } from "lib/utils";
 import { TOTAL_QUESTIONS } from "constants/gameRules";
-import { useGameStore } from "store/gameStore";
+import { useGameStore } from "context/gameStore";
 
 type props = {
   question: string;

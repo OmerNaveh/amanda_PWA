@@ -2,7 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import Header from "components/header/Header";
 import { GAME_STATUS } from "models/game";
-import { useGameStore } from "store/gameStore";
+import { useGameStore } from "context/gameStore";
 
 const Layout = () => {
   const gameStatus = useGameStore((state) => state.gameStatus);

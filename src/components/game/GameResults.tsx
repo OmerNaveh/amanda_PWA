@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useMutation } from "react-query";
 import { motion } from "framer-motion";
 import { returnToOptions, startSession } from "services/apiClient";
-import { useGameStore } from "store/gameStore";
+import { useGameStore } from "context/gameStore";
 import { useAuthContext } from "context/AuthContext";
 import UserSlider from "./UserSlider";
 import CircularProgress from "components/ui/CircularProgress";

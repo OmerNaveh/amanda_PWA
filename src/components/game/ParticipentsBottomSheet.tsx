@@ -1,7 +1,7 @@
 import { useMemo, useState, memo } from "react";
 import { motion } from "framer-motion";
 import { useAuthContext } from "context/AuthContext";
-import { useGameStore } from "store/gameStore";
+import { useGameStore } from "context/gameStore";
 import { GAME_STATUS } from "models/game";
 import CircularProgress from "components/ui/CircularProgress";
 import DraggableDrawer from "components/ui/DraggableDrawer";

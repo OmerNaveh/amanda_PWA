@@ -5,7 +5,7 @@ import { User } from "models/user";
 import { getNextQuestion } from "services/apiClient";
 import { useToast } from "components/ui/useToast";
 import { useAuthContext } from "context/AuthContext";
-import { useGameStore } from "store/gameStore";
+import { useGameStore } from "context/gameStore";
 import { getErrorMessage } from "lib/errorHandling";
 import QuestionBoard from "./QuestionBoard";
 import QuestionResult from "./QuestionResult";

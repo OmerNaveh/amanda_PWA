@@ -5,7 +5,7 @@ import { WS_MESSAGE, WS_MESSAGE_TYPE } from "models/ws";
 import { User } from "models/user";
 import { useAuthContext } from "context/AuthContext";
 // Replace GameContext import with Zustand store
-import { useGameStore } from "store/gameStore";
+import { useGameStore } from "context/gameStore";
 import ParticipentsBottomSheet from "components/game/ParticipentsBottomSheet";
 import WaitingRoom from "components/game/WaitingRoom";
 import { useMutation } from "react-query";

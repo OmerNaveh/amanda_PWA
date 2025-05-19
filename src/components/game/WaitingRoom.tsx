@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "react-query";
 import { motion } from "framer-motion";
 import { getQuestionTypes, startSession } from "services/apiClient";
 import CategorySlider from "./CategorySlider";
-import { useGameStore } from "store/gameStore";
+import { useGameStore } from "context/gameStore";
 import { useAuthContext } from "context/AuthContext";
 import { QuestionType } from "models/responses";
 import { useToast } from "components/ui/useToast";

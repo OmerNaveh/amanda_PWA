@@ -7,7 +7,7 @@ import { extractRGB } from "lib/colorHandling";
 import { getErrorMessage } from "lib/errorHandling";
 import { CreateOrJoinSpaceRequest } from "models/requests";
 import { createSpace } from "services/apiClient";
-import { useGameStore } from "store/gameStore";
+import { useGameStore } from "context/gameStore";
 import { useAuthContext } from "context/AuthContext";
 import { GAME_STATUS } from "models/game";
 import WelcomeSection from "components/welcome/WelcomeSection";
