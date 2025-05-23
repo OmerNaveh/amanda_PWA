@@ -137,9 +137,9 @@ const GameRoom = () => {
         <Suspense fallback={<Loader />}>
           <AnimatePresence mode="wait">
             {gameStatus === GAME_STATUS.PRE_GAME ? (
-              <WaitingRoom key={gameStatus} />
+              <WaitingRoom key={"preGame"} />
             ) : gameStatus === GAME_STATUS.GAME_OVER ? (
-              <GameResults key={gameStatus} />
+              <GameResults key={"gameOver"} />
             ) : (
               <PlayTime
                 key={"playtime"}

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { useMutation } from "react-query";
 import { GAME_STATUS, Question } from "models/game";
 import { User } from "models/user";
@@ -7,13 +6,13 @@ import QuestionCard from "./QuestionCard";
 import UserSlider from "./UserSlider";
 import CountdownTimer from "./CountdownTimer";
 import { useAuthContext } from "context/AuthContext";
-import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
 import { answerQuestion, getQuestionResult } from "services/apiClient";
 import { getErrorMessage } from "lib/errorHandling";
 import { useToast } from "components/ui/useToast";
 import Carousel from "components/ui/Carousel";
 import { useGameStore } from "context/gameStore";
+import GradientButton from "components/ui/GradientButton";
 type props = {
   question?: Question | null;
 };
@@ -115,17 +114,17 @@ const QuestionBoard = ({ question }: props) => {
     );
   }, [isSessionAdmin, showResult]);
 
-  const rennderAdminButtons = () => {
+  const renderAdminButtons = useCallback(() => {
     return (
-      <Button
+      <GradientButton
+        className="w-full"
         disabled={showAnswerResultLoading}
         onClick={showResult}
-        className="px-4"
       >
         {showAnswerResultLoading ? <CircularProgress /> : <p>{"הצג תוצאות"}</p>}
-      </Button>
+      </GradientButton>
     );
-  };
+  }, [showAnswerResultLoading, showResult]);
 
   // Trigger Show result when everyone answered - only for admin
   useEffect(() => {
@@ -146,13 +145,7 @@ const QuestionBoard = ({ question }: props) => {
   ]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
-      className="flex flex-col flex-1 gap-4"
-    >
+    <div className="flex flex-col flex-1 gap-4">
       <QuestionCard
         question={
           gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS || !question
@@ -162,24 +155,18 @@ const QuestionBoard = ({ question }: props) => {
         renderCountdown={!!question ? renderCountdown : undefined}
         renderButtons={
           gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS && !!isSessionAdmin
-            ? rennderAdminButtons
+            ? renderAdminButtons
             : undefined
         }
       />
 
       {gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS &&
       !!currentAnswerSelection ? (
-        <div
-          dir="rtl"
-          className="flex justify-center items-center w-full flex-shrink-0"
-        >
+        <div dir="rtl" className="flex flex-col flex-1 w-full">
           <UserSlider user={currentAnswerSelection} />
         </div>
       ) : gameStatus === GAME_STATUS.WAITING_FOR_ANSWERS && !question ? (
-        <div
-          dir="rtl"
-          className="flex justify-center items-center w-full flex-shrink-0"
-        >
+        <div dir="rtl" className="flex flex-col flex-1 w-full">
           <Carousel
             cards={participents.map((participant) => (
               <UserSlider key={participant.id} user={participant} />
@@ -187,11 +174,7 @@ const QuestionBoard = ({ question }: props) => {
           />
         </div>
       ) : (
-        <div
-          dir="rtl"
-          className={`flex flex-col w-full flex-shrink-0
-          ${participents.length === 1 && "justify-center"}`}
-        >
+        <div dir="rtl" className={`flex flex-col flex-1 w-full`}>
           <Carousel
             cards={participents.map((participant) => (
               <UserSlider
@@ -205,7 +188,7 @@ const QuestionBoard = ({ question }: props) => {
           />
         </div>
       )}
-    </motion.div>
+    </div>
   );
 };
 

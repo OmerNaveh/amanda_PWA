@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Crown } from "lucide-react";
+
 import CircularProgress from "components/ui/CircularProgress";
 import useIntersectionObserver from "hooks/useIntersectionObserver";
 import { User } from "models/user";
@@ -9,30 +9,22 @@ type props = {
   user: User;
   onClick?: (User: User) => void;
   isActiveUser?: boolean;
-  isGameSummmary?: boolean;
-  isWinner?: boolean;
   isLoading?: boolean;
 };
-const UserSlider = ({
-  user,
-  onClick,
-  isActiveUser,
-  isLoading,
-  isGameSummmary,
-  isWinner,
-}: props) => {
+const UserSlider = ({ user, onClick, isActiveUser, isLoading }: props) => {
   const cardRef = useRef(null);
   const isVisible = useIntersectionObserver(cardRef, {
     root: null, // Observe intersection relative to the viewport
     threshold: 0.6, // 60% visibility
   });
 
+  if (!user) return null;
   return (
     <div
       ref={cardRef}
       key={user.id}
       dir="rtl"
-      className="flex flex-col gap-4 bg-card rounded-lg p-4 border-2 border-card max-w-md mx-auto flex-1"
+      className="flex-1 flex flex-col gap-4 justify-center bg-card rounded-lg p-4 border-2 border-card max-w-md mx-auto h-full w-full"
     >
       <div className="relative mx-auto flex items-center justify-center">
         <div
@@ -49,16 +41,6 @@ const UserSlider = ({
         {user.name}
       </p>
 
-      {isGameSummmary && (
-        <div dir="rtl" className="flex flex-col gap-1">
-          {isWinner && (
-            <div className="flex justify-center">
-              <Crown className="h-5 w-5 fill-yellow-400" />
-            </div>
-          )}
-          <p className="font-semibold text-lg"> {user?.score || 0} נק׳</p>
-        </div>
-      )}
       {!!onClick && (
         <GradientButton
           disabled={isLoading}

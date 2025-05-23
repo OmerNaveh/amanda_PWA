@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface props {
@@ -16,7 +16,7 @@ const useScreenChange = ({ resetAll }: props) => {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, []);
+  }, [navigate, resetAll]);
 
   return;
 };
