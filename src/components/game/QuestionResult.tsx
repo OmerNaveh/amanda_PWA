@@ -120,7 +120,7 @@ const QuestionResult = ({
         {result?.[0]?.id ? (
           <div
             dir="rtl"
-            className="flex-1 w-full flex flex-col justify-center bg-card rounded-lg p-2 border-2 border-card"
+            className="flex-1 w-full flex flex-col justify-center bg-card rounded-lg p-2 border-2 border-card max-w-md"
           >
             <p>{"נראה שאף אחד לא הצביע..."}</p>
           </div>

@@ -21,7 +21,7 @@ const QuestionTypeCard = ({ questionType, isLoading, onClick }: props) => {
       key={questionType.id}
       className="h-full w-full mx-auto max-w-md flex flex-col bg-card rounded-lg p-2 xs:p-4 gap-2 xs:gap-4 border-2 border-card overflow-hidden"
     >
-      <div className="relative flex-[0.55] w-full">
+      <div className="relative flex-1 w-full">
         <img
           src={questionType.picture}
           alt="question type"
@@ -31,7 +31,7 @@ const QuestionTypeCard = ({ questionType, isLoading, onClick }: props) => {
           {questionType.name}
         </h5>
       </div>
-      <p className="text-sm sm:text-base text-center text-white/80 line-clamp-3 sm:line-clamp-4">
+      <p className="text-sm xs:text-base text-center text-white/80 line-clamp-3 xs:line-clamp-4">
         {questionType.description}
       </p>
 

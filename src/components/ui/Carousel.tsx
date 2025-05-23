@@ -79,7 +79,7 @@ const CardWrapper = ({ imgIndex, idx, children }: wrapperProps) => {
         scale: imgIndex === idx ? 1 : 0.85,
       }}
       transition={SPRING_OPTIONS}
-      className="w-full h-full min-w-full"
+      className="w-full flex-1 min-w-full"
     >
       {children}
     </motion.div>

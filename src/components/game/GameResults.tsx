@@ -75,7 +75,7 @@ const GameResults = () => {
         />
       </div>
 
-      <div className="flex mt-auto justify-between gap-4 w-full">
+      <div className="flex mt-auto justify-between gap-4 w-full max-w-md mx-auto">
         <GradientButton
           variant="secondary"
           className="w-full"

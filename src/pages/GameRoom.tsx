@@ -4,7 +4,6 @@ import { GAME_STATUS, Question } from "models/game";
 import { WS_MESSAGE, WS_MESSAGE_TYPE } from "models/ws";
 import { User } from "models/user";
 import { useAuthContext } from "context/AuthContext";
-// Replace GameContext import with Zustand store
 import { useGameStore } from "context/gameStore";
 import ParticipentsBottomSheet from "components/game/ParticipentsBottomSheet";
 import WaitingRoom from "components/game/WaitingRoom";
@@ -22,8 +21,6 @@ const GameRoom = () => {
   const [question, setQuestion] = useState<Question | null>(null);
   const [result, setResult] = useState<User[] | null>(null);
 
-  // Use individual selectors from Zustand instead of destructuring the whole context
-  // This ensures components only re-render when their specific dependencies change
   const space = useGameStore((state) => state.space);
   const participents = useGameStore((state) => state.participents);
   const setParticipents = useGameStore((state) => state.setParticipents);
@@ -46,60 +43,72 @@ const GameRoom = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleMessage = useCallback((data: any) => {
-    const wsData = data?.data as WS_MESSAGE;
+  const handleMessage = useCallback(
+    (data: any) => {
+      const wsData = data?.data as WS_MESSAGE;
 
-    switch (wsData.type) {
-      case WS_MESSAGE_TYPE.JOIN:
-        if (user?.id === wsData.user.id || !wsData?.users?.length) return;
-        setParticipents(wsData.users);
-        break;
-      case WS_MESSAGE_TYPE.LEAVE:
-        setParticipents((prev) => {
-          if (!prev.length) return prev;
-          if (wsData.user.id === user?.id) return prev;
-          return prev.filter(
-            (participent) => participent.id !== wsData.user.id
-          );
-        });
-        break;
-      case WS_MESSAGE_TYPE.START_GAME:
-        setGameStatus(GAME_STATUS.SHOWING_QUESTION);
-        setQuestionCounter(1);
-        setResult(null);
-        setSession(wsData.session);
-        setQuestion(wsData.question);
-        setSelectedGameType(wsData.questionType);
-        setParticipents(wsData.users);
-        setGameSummary([]);
-        break;
-      case WS_MESSAGE_TYPE.END_GAME:
-        setQuestion(null);
-        setResult(null);
-        setSession(null);
-        setGameStatus(GAME_STATUS.GAME_OVER);
-        setGameSummary(wsData.users);
-        break;
-      case WS_MESSAGE_TYPE.NEXT_QUESTION:
-        setQuestionCounter((prev) => prev + 1);
-        setGameStatus(GAME_STATUS.SHOWING_QUESTION);
-        setParticipents(wsData.users);
-        setResult(null);
-        setQuestion(wsData.question);
-        break;
-      case WS_MESSAGE_TYPE.NEXT_RESULT:
-        setResult(wsData.users);
-        setGameStatus(GAME_STATUS.SHOWING_RESULT);
-        break;
-      case WS_MESSAGE_TYPE.BACK_TO_OPTIONS:
-        resetGame();
-        break;
-      case WS_MESSAGE_TYPE.ALL_ANSWERS_SUBMITTED:
-        setHasEveryoneAnswered(true);
-        break;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      switch (wsData.type) {
+        case WS_MESSAGE_TYPE.JOIN:
+          if (user?.id === wsData.user.id || !wsData?.users?.length) return;
+          setParticipents(wsData.users);
+          break;
+        case WS_MESSAGE_TYPE.LEAVE:
+          setParticipents((prev) => {
+            if (!prev.length) return prev;
+            if (wsData.user.id === user?.id) return prev;
+            return prev.filter(
+              (participent) => participent.id !== wsData.user.id
+            );
+          });
+          break;
+        case WS_MESSAGE_TYPE.START_GAME:
+          setGameStatus(GAME_STATUS.SHOWING_QUESTION);
+          setQuestionCounter(1);
+          setResult(null);
+          setSession(wsData.session);
+          setQuestion(wsData.question);
+          setSelectedGameType(wsData.questionType);
+          setParticipents(wsData.users);
+          setGameSummary([]);
+          break;
+        case WS_MESSAGE_TYPE.END_GAME:
+          setQuestion(null);
+          setResult(null);
+          setSession(null);
+          setGameStatus(GAME_STATUS.GAME_OVER);
+          setGameSummary(wsData.users);
+          break;
+        case WS_MESSAGE_TYPE.NEXT_QUESTION:
+          setQuestionCounter((prev) => prev + 1);
+          setGameStatus(GAME_STATUS.SHOWING_QUESTION);
+          setParticipents(wsData.users);
+          setResult(null);
+          setQuestion(wsData.question);
+          break;
+        case WS_MESSAGE_TYPE.NEXT_RESULT:
+          setResult(wsData.users);
+          setGameStatus(GAME_STATUS.SHOWING_RESULT);
+          break;
+        case WS_MESSAGE_TYPE.BACK_TO_OPTIONS:
+          resetGame();
+          break;
+        case WS_MESSAGE_TYPE.ALL_ANSWERS_SUBMITTED:
+          setHasEveryoneAnswered(true);
+          break;
+      }
+    },
+    [
+      resetGame,
+      setGameStatus,
+      setGameSummary,
+      setHasEveryoneAnswered,
+      setParticipents,
+      setQuestionCounter,
+      setSelectedGameType,
+      setSession,
+      user?.id,
+    ]
+  );
 
   useSocket({ handleMessage, channel: space?.channel });
 
@@ -133,7 +142,7 @@ const GameRoom = () => {
               <GameResults key={gameStatus} />
             ) : (
               <PlayTime
-                key={gameStatus}
+                key={"playtime"}
                 question={question}
                 result={result}
                 finishGame={finishGame}

@@ -12,9 +12,6 @@ import Loader from "./Loader";
 
 const WaitingRoom = () => {
   const space = useGameStore((state) => state.space);
-  const setSelectedGameType = useGameStore(
-    (state) => state.setSelectedGameType
-  );
 
   const { user } = useAuthContext();
   const { toast } = useToast();
@@ -30,9 +27,6 @@ const WaitingRoom = () => {
         questionTypeId: questionType.id,
       }),
     {
-      onSuccess: (data) => {
-        setSelectedGameType(data.questionType);
-      },
       onError: (error) => {
         toast({ description: getErrorMessage(error), variant: "destructive" });
       },

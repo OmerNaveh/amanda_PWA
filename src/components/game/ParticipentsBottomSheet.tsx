@@ -1,4 +1,4 @@
-import { useMemo, useState, memo } from "react";
+import { useMemo, useState, memo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useAuthContext } from "context/AuthContext";
 import { useGameStore } from "context/gameStore";
@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import GradientButton from "components/ui/GradientButton";
 import { Share2 } from "lucide-react";
 import IconButton from "components/ui/IconButton";
+import { useToast } from "components/ui/useToast";
+import { User } from "models/user";
 
 type props = {
   finishGame: () => void;
@@ -23,6 +25,7 @@ const ParticipentsBottomSheet = ({
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
   const { user } = useAuthContext();
+  const { toast } = useToast();
 
   const participents = useGameStore((state) => state.participents);
   const gameStatus = useGameStore((state) => state.gameStatus);
@@ -40,12 +43,13 @@ const ParticipentsBottomSheet = ({
       }),
     [participents, user]
   );
-  const handleExitGame = () => {
+
+  const handleExitGame = useCallback(() => {
     resetAll();
     navigate("/");
-  };
+  }, [resetAll, navigate]);
 
-  const handleShare = async () => {
+  const handleShare = useCallback(async () => {
     if (navigator.share) {
       try {
         await navigator.share({
@@ -54,12 +58,22 @@ const ParticipentsBottomSheet = ({
           url: window.location.href,
         });
       } catch (err) {
-        console.log("Share failed:", err);
+        console.error(err);
       }
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "הקישור הועתק",
+        });
+      } catch (err) {
+        toast({
+          title: "שגיאה בהעתקת הקישור",
+          variant: "destructive",
+        });
+      }
     }
-  };
+  }, [space, toast]);
 
   return (
     <>
@@ -104,22 +118,12 @@ const ParticipentsBottomSheet = ({
 
         <div className="flex flex-col gap-4 py-2 min-h-0 flex-1 overflow-y-auto">
           {sortedParticipents.map((participent, index) => (
-            <div
-              dir="rtl"
+            <ParticipantItem
               key={participent.id}
-              className={`flex items-center gap-4 text-white w-full p-2 rounded-lg ${
-                participent.id === user?.id ? "bg-white/10" : ""
-              }`}
-            >
-              <p className="text-white/50">{index + 1}</p>
-              <div
-                className="h-10 w-10 rounded-lg"
-                style={{ backgroundColor: `rgb(${participent.color})` }}
-              />
-              <span className="line-clamp-1 max-w-[50%]">
-                {participent.name}
-              </span>
-            </div>
+              index={index}
+              participant={participent}
+              isCurrentUser={participent.id === user?.id}
+            />
           ))}
         </div>
 
@@ -151,4 +155,30 @@ const ParticipentsBottomSheet = ({
     </>
   );
 };
+
+type ParticipantItemProps = {
+  participant: User;
+  isCurrentUser: boolean;
+  index: number;
+};
+const ParticipantItem = ({
+  participant,
+  isCurrentUser,
+  index,
+}: ParticipantItemProps) => (
+  <div
+    dir="rtl"
+    className={`flex items-center gap-4 text-white w-full p-2 rounded-lg ${
+      isCurrentUser ? "bg-white/10" : ""
+    }`}
+  >
+    <p className="text-white/50">{index + 1}</p>
+    <div
+      className="h-10 w-10 rounded-full flex-shrink-0"
+      style={{ backgroundColor: `rgb(${participant.color})` }}
+    />
+    <span className="line-clamp-1">{participant.name}</span>
+  </div>
+);
+
 export default memo(ParticipentsBottomSheet);

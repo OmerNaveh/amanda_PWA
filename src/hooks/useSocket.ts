@@ -25,6 +25,7 @@ const useSocket = ({ handleMessage, channel }: props) => {
 
     return () => {
       if (socketRef.current) {
+        socketRef.current.off("newMessage", handleMessage);
         socketRef.current.disconnect();
       }
     };

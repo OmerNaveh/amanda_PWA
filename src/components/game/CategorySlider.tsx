@@ -8,6 +8,7 @@ type props = {
   isLoading: boolean;
   startGame: (gameType: QuestionType) => void;
 };
+
 const CategorySlider = ({ questionTypes, isLoading, startGame }: props) => {
   if (!questionTypes?.length) {
     return (
@@ -19,8 +20,9 @@ const CategorySlider = ({ questionTypes, isLoading, startGame }: props) => {
       </div>
     );
   }
+
   return (
-    <div className="flex flex-col overflow-hidden">
+    <div className="flex flex-col overflow-hidden flex-1 xs:gap-4">
       <h3 className="font-bold text-xl">{"בחרו את סוג המשחק"}</h3>
 
       <Carousel
