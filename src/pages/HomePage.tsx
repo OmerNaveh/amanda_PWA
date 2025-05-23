@@ -15,9 +15,6 @@ import { Step } from "models/welcome";
 import JoinSection from "components/welcome/JoinSection";
 
 const HomePage = () => {
-  const [color, setColor] = useState<string | null>(null);
-  const amandaIdRef = React.useRef<HTMLInputElement>(null);
-  const nicknameRef = React.useRef<HTMLInputElement>(null);
   const [step, setStep] = useState<Step>("welcome");
 
   const setSpace = useGameStore((state) => state.setSpace);
@@ -48,15 +45,14 @@ const HomePage = () => {
     }
   );
 
-  const handleStartGame = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const amandaId = amandaIdRef.current?.value;
-    const nickname = nicknameRef.current?.value;
-    if (!amandaId || !color || !nickname) {
-      toast({ title: "יש למלא את כל השדות", variant: "destructive" });
-      return;
-    }
-    mutate({ amandaId, name: nickname, color: extractRGB(color) });
+  const handleStartGame = async ({
+    amandaId,
+    name,
+    color,
+  }: CreateOrJoinSpaceRequest) => {
+    if (!amandaId || !color || !name) return;
+
+    mutate({ amandaId, name, color: extractRGB(color) });
   };
 
   const handleWelcomePageClick = (step: Step) => {
@@ -82,10 +78,6 @@ const HomePage = () => {
           <JoinSection
             step={step}
             handleWelcomePageClick={handleWelcomePageClick}
-            color={color}
-            setColor={setColor}
-            amandaIdRef={amandaIdRef}
-            nicknameRef={nicknameRef}
             handleStartGame={handleStartGame}
             isLoading={isLoading}
           />

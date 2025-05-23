@@ -16,10 +16,7 @@ const Layout = () => {
 
       <main
         className="flex-1 flex flex-col p-4 transition-all"
-        style={{
-          height: showHeader ? "calc(100dvh - 57px)" : "100dvh",
-          WebkitOverflowScrolling: "touch",
-        }}
+        style={{ WebkitOverflowScrolling: "touch" }}
       >
         <Outlet />
       </main>
@@ -41,9 +38,12 @@ const Background: React.FC = () => {
 
 export const Fallback = () => {
   return (
-    <>
+    <div className="min-h-[100dvh] flex flex-col bg-gradient-to-b from-violet-900 via-purple-800 to-fuchsia-900 text-white overflow-hidden">
       <Background />
       <Header showHeader={true} />
-    </>
+      <main className="flex-1 flex flex-col p-4 justify-center items-center">
+        <span dir="rtl">{"טוען..."}</span>
+      </main>
+    </div>
   );
 };

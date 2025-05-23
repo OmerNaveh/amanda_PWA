@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ReactComponent as Amanda } from "assets/amanda.svg";
 import { ReactComponent as Person } from "assets/person.svg";
@@ -6,31 +6,39 @@ import { ReactComponent as Paint } from "assets/paintpalette.svg";
 import { Input } from "components/ui/input";
 import CircularProgress from "components/ui/CircularProgress";
 import { COLORS } from "constants/colors";
+import { CreateOrJoinSpaceRequest } from "models/requests";
 import { CheckIcon, Flame } from "lucide-react";
 import { cn } from "lib/utils";
 import GradientButton from "components/ui/GradientButton";
+import { useToast } from "components/ui/useToast";
 
 type JoinFormProps = {
-  color: string | null;
-  setColor: (color: string) => void;
-  amandaIdRef: React.RefObject<HTMLInputElement>;
-  nicknameRef: React.RefObject<HTMLInputElement>;
-  handleStartGame: (e: React.FormEvent) => void;
+  handleStartGame: (data: CreateOrJoinSpaceRequest) => void;
   isLoading: boolean;
 };
 
-const JoinForm: React.FC<JoinFormProps> = ({
-  color,
-  setColor,
-  amandaIdRef,
-  nicknameRef,
-  handleStartGame,
-  isLoading,
-}) => {
+const JoinForm: React.FC<JoinFormProps> = ({ handleStartGame, isLoading }) => {
+  const { toast } = useToast();
+  const [color, setColor] = useState<string | null>(null);
+  const [amandaId, setAmandaId] = useState<string>("");
+  const [nickname, setNickname] = useState<string>("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!amandaId || !color || !nickname) {
+      toast({ title: "יש למלא את כל השדות", variant: "destructive" });
+      return;
+    }
+    handleStartGame({
+      amandaId,
+      color,
+      name: nickname,
+    });
+  };
   return (
     <motion.form
       dir="rtl"
-      onSubmit={handleStartGame}
+      onSubmit={handleSubmit}
       className="py-8 flex flex-col gap-8 max-w-md mx-auto"
       initial={{ y: 50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -48,7 +56,8 @@ const JoinForm: React.FC<JoinFormProps> = ({
           <span>קוד חדר</span>
         </div>
         <Input
-          ref={amandaIdRef}
+          value={amandaId}
+          onChange={(e) => setAmandaId(e.target.value)}
           type="text"
           placeholder="הקלידו את קוד החדר כאן"
         />
@@ -59,7 +68,11 @@ const JoinForm: React.FC<JoinFormProps> = ({
           <Person className="h-6 w-6" />
           <span>כינוי</span>
         </div>
-        <Input ref={nicknameRef} placeholder={"איך נקרא לך?"} />
+        <Input
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+          placeholder={"איך נקרא לך?"}
+        />
       </div>
 
       <div className="flex flex-col gap-2 items-start w-full" dir="rtl">

@@ -9,20 +9,22 @@ import { Step } from "models/welcome";
 type WelcomeSectionProps = {
   handleWelcomePageClick: (step: Step) => void;
 };
-const WelcomeSection = ({ handleWelcomePageClick }: WelcomeSectionProps) => {
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20, scale: 0.95 },
-    show: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 260,
-        damping: 20,
-      },
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 260,
+      damping: 20,
     },
-  };
+  },
+};
+
+const WelcomeSection = ({ handleWelcomePageClick }: WelcomeSectionProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

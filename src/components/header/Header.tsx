@@ -2,13 +2,15 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Volume2, VolumeX } from "lucide-react";
 import logo from "assets/amanda_logo.png";
 import { useState } from "react";
+import useSoundManager from "hooks/useSoundManager";
 
 type HeaderProps = {
   showHeader: boolean;
 };
 
 export default function Header({ showHeader }: HeaderProps) {
-  const [isSoundOn, setIsSoundOn] = useState(true);
+  const [isSoundOn, setIsSoundOn] = useState(false);
+  useSoundManager({ isSoundOn: isSoundOn && showHeader });
 
   return (
     <AnimatePresence mode="wait">
