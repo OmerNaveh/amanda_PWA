@@ -1,26 +1,18 @@
 export const COLORS: Record<string, string> = {
-  COLOR_1: "20,255,0",
-  COLOR_2: "235,0,255",
-  COLOR_4: "255,0,0",
-  COLOR_5: "0,240,255",
-  COLOR_8: "255,245,0",
-  COLOR_7: "0,178,255",
-  COLOR_9: "36,0,255",
-  COLOR_3: "0,255,117",
-  COLOR_6: "255,122,0",
-  COLOR_11: "255,0,229",
-  COLOR_10: "159,210,95",
-  COLOR_12: "78,213,148",
-  COLOR_13: "255,0,138",
-  COLOR_14: "57,87,55",
-  COLOR_15: "255,168,225",
-  COLOR_16: "104,0,37",
-  COLOR_17: "187,118,255",
-  COLOR_18: "138,0,83",
-  COLOR_19: "158,0,255",
-  COLOR_20: "255,115,115",
-  COLOR_21: "86,0,153",
-  COLOR_22: "140,140,140",
-  COLOR_23: "66,131,127",
-  COLOR_24: "92,96,155",
+  RED: "244,67,54", // Red (Vibrant)
+  PINK: "233,30,99", // Pink (Bright)
+  PURPLE: "156,39,176", // Purple (Rich)
+  BLUE: "33,150,243", // Blue (Vibrant)
+  ORANGE: "255,87,34", // Orange (Bold)
+  TEAL: "0,200,136", // Teal (Fresh)
+  YELLOW: "255,193,7", // Yellow (Bright)
+  CYAN: "0,230,212", // Cyan (Bright)
+  GREEN: "76,175,80", // Green (Strong)
+  LIGHT_PINK: "255,100,129", // Light Pink (Warm)
+  DARK_BLUE: "13,71,161", // Dark Blue (Deep)
+  B_YELLOW: "255,235,0", // Bright Yellow (Vibrant)
+  MAGENTA: "219,19,206", // Magenta (Vivid)
+  GREY: "96,125,139", // Blue Grey (Neutral)
+  WHITE: "255,255,255", // White (Pure)
+  B_GREEN: "100,255,0", // Bright Green
 };

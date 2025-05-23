@@ -1,12 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-import confetti from "canvas-confetti";
-import { Button } from "components/ui/Button";
 import CircularProgress from "components/ui/CircularProgress";
+import GradientButton from "components/ui/GradientButton";
+import { TOTAL_QUESTIONS } from "constants/gameRules";
+import { useAuthContext } from "context/AuthContext";
 import { User } from "models/user";
+import { useGameStore } from "context/gameStore";
 import QuestionCard from "./QuestionCard";
 import UserSlider from "./UserSlider";
-import { TOTAL_QUESTIONS } from "constants/gameRules";
-import { useGameContext } from "context/GameContext";
+import useHighlightWinner from "hooks/useHighlightWinner";
+import { Question } from "models/game";
+import { useCallback } from "react";
 
 type props = {
   result: User[] | null;
@@ -14,12 +16,9 @@ type props = {
   loadingNextQuestion: boolean;
   finishGame: () => void;
   loadingFinishGame: boolean;
-  isAdmin: boolean;
   questionCounter: number;
+  question?: Question | null;
 };
-
-const TOTAL_ANIMATION_DURATION = 5000;
-const CYCLE_INTERVAL = 300;
 
 const QuestionResult = ({
   result,
@@ -27,91 +26,60 @@ const QuestionResult = ({
   loadingNextQuestion,
   finishGame,
   loadingFinishGame,
-  isAdmin,
   questionCounter,
+  question,
 }: props) => {
-  const [currentHighlight, setCurrentHighlight] = useState<number>(0);
-  const [animationInProgress, setAnimationInProgress] = useState<boolean>(true);
-  const { participents: part } = useGameContext();
-  const participents = useMemo(() => {
-    return part;
-  }, []);
-  const showFireworks = () => {
-    const colors = ["#FFFFFF", "#211134", "#97A9F6"];
-    confetti({
-      particleCount: 50,
-      angle: 60,
-      spread: 55,
-      origin: { x: 0 },
-      colors: colors,
-    });
-    confetti({
-      particleCount: 50,
-      angle: 120,
-      spread: 55,
-      origin: { x: 1 },
-      colors: colors,
-    });
-  };
-  useEffect(() => {
-    if (!result || !result?.length || !result[0]?.id) return;
-    if (!animationInProgress || participents.length <= 1) {
-      showFireworks();
-      return;
-    }
+  const { user } = useAuthContext();
 
-    const cycleTimeout = setInterval(() => {
-      setCurrentHighlight(
-        (prevHighlight) => (prevHighlight + 1) % participents.length
-      );
-    }, CYCLE_INTERVAL);
+  const participents = useGameStore((state) => state.participents);
+  const getIsSessionAdmin = useGameStore((state) => state.getIsSessionAdmin);
+  const isSessionAdmin = getIsSessionAdmin(user?.id);
 
-    const stopAnimationTimeout = setTimeout(() => {
-      clearInterval(cycleTimeout);
+  const { currentHighlight } = useHighlightWinner(result, participents);
 
-      // Set the highlight to the winner
-      const winnerId = result[0].id;
-      const winnerIndex = participents.findIndex((p) => p.id === winnerId);
-      setCurrentHighlight(winnerIndex);
+  const winnerId = result?.[0]?.id;
 
-      setAnimationInProgress(false);
-      showFireworks();
-    }, TOTAL_ANIMATION_DURATION);
-
-    return () => {
-      clearInterval(cycleTimeout);
-      clearTimeout(stopAnimationTimeout);
-      setCurrentHighlight(0);
-    };
-  }, [participents, result]);
-
-  const renderAdminButtons = () => {
+  const renderAdminButtons = useCallback(() => {
     return questionCounter === TOTAL_QUESTIONS ? (
-      <Button onClick={finishGame} disabled={loadingFinishGame}>
-        {loadingFinishGame ? <CircularProgress /> : "לתוצאות"}
-      </Button>
-    ) : (
-      <Button onClick={showNextQuestion} disabled={loadingNextQuestion}>
-        {loadingNextQuestion ? <CircularProgress /> : "לשאלה הבאה"}
-      </Button>
-    );
-  };
-  return (
-    <div className="flex flex-col gap-4 h-full">
-      <QuestionCard
-        question={"והזוכה הגדול הוא היא הם"}
-        renderButtons={isAdmin ? renderAdminButtons : undefined}
-      />
-      <div
-        dir="rtl"
-        className="flex justify-center items-center h-[50%] w-full pb-2 flex-shrink-0"
+      <GradientButton
+        className="w-full"
+        onClick={finishGame}
+        disabled={loadingFinishGame}
       >
-        {!result || !result.length || !result[0]?.id ? (
+        {loadingFinishGame ? <CircularProgress /> : "לתוצאות"}
+      </GradientButton>
+    ) : (
+      <GradientButton
+        className="w-full"
+        onClick={showNextQuestion}
+        disabled={loadingNextQuestion}
+      >
+        {loadingNextQuestion ? <CircularProgress /> : "לשאלה הבאה"}
+      </GradientButton>
+    );
+  }, [
+    finishGame,
+    loadingFinishGame,
+    loadingNextQuestion,
+    questionCounter,
+    showNextQuestion,
+  ]);
+
+  return (
+    <div className="flex flex-col gap-4 flex-1">
+      <QuestionCard
+        question={question?.content || "והזוכה הגדול הוא היא הם"}
+        renderButtons={isSessionAdmin ? renderAdminButtons : undefined}
+      />
+      <div dir="rtl" className="flex flex-col flex-1 w-full">
+        {!winnerId ? (
           <div
             dir="rtl"
-            className="h-full w-full flex flex-col justify-center bg-card rounded-lg p-2 border-2 border-card"
+            className="flex-1 w-full flex flex-col justify-center max-w-md mx-auto"
           >
-            <p>{"נראה שאף אחד לא הצביע..."}</p>
+            <p className="text-lg font-semibold">
+              {"נראה שאף אחד לא הצביע..."}
+            </p>
           </div>
         ) : (
           <UserSlider user={participents[currentHighlight]} />

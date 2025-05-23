@@ -53,7 +53,7 @@ const DraggableDrawer = ({ open, setOpen, children }: props) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           onClick={handleClose}
-          className="fixed inset-0 z-50 bg-black/30"
+          className="fixed inset-0 z-50 bg-black/10"
         >
           <motion.div
             id="drawer"
@@ -64,7 +64,7 @@ const DraggableDrawer = ({ open, setOpen, children }: props) => {
             transition={{
               ease: "easeInOut",
             }}
-            className="absolute bottom-0 page-height w-full overflow-hidden rounded-t-3xl bg-purple-950"
+            className="absolute bottom-0 page-height w-full flex flex-col overflow-hidden rounded-t-3xl bg-black/50 backdrop-blur-sm"
             style={{ y }}
             drag="y"
             dragControls={controls}
@@ -83,17 +83,15 @@ const DraggableDrawer = ({ open, setOpen, children }: props) => {
               bottom: 0.5,
             }}
           >
-            <div className="absolute left-0 right-0 top-0 z-10 flex justify-center bg-purple-950 p-4">
+            <div className="flex justify-center p-4">
               <button
                 onPointerDown={(e) => {
                   controls.start(e);
                 }}
-                className="h-2 w-14 cursor-grab touch-none rounded-full bg-neutral-700 active:cursor-grabbing"
+                className="h-2 w-20 cursor-grab touch-none rounded-full bg-white/30 active:cursor-grabbing"
               ></button>
             </div>
-            <div className="relative z-0 h-full flex flex-col p-4 pt-12">
-              {children}
-            </div>
+            <div className="flex-1 flex flex-col p-4 min-h-0">{children}</div>
           </motion.div>
         </motion.div>
       )}

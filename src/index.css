@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: #17122B;
+    --background: #17122b;
     --foreground: #fff;
 
     --muted: 223 47% 11%;
@@ -43,26 +43,26 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
     padding: env(safe-area-inset-top) env(safe-area-inset-right)
       env(safe-area-inset-bottom) env(safe-area-inset-left);
-    overflow: hidden;
-    min-height: 100vh;
-    min-height: -moz-available;
-    min-height: 100svh;
-    height: 100vh;
+    min-height: 100dvh;
     height: 100dvh;
-    max-height: 100vh;
-    max-height: 100lvh;
+    width: 100vw;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
   }
   #root {
-    height: 100%;
+    min-height: 100dvh;
+    height: 100dvh;
+    width: 100vw;
   }
 }
 
 .page-height {
-  height: calc(100% - 7rem);
+  height: calc(100dvh - 57px);
 }
 
 input:-webkit-autofill,

@@ -1,135 +1,155 @@
 import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GAME_STATUS, Question } from "models/game";
-import { PUBNUB_MESSAGE, PUBNUB_MESSAGE_TYPE } from "models/pubnub";
+import { WS_MESSAGE, WS_MESSAGE_TYPE } from "models/ws";
 import { User } from "models/user";
 import { useAuthContext } from "context/AuthContext";
-import { useGameContext } from "context/GameContext";
+import { useGameStore } from "context/gameStore";
 import ParticipentsBottomSheet from "components/game/ParticipentsBottomSheet";
 import WaitingRoom from "components/game/WaitingRoom";
-import LoaderCard from "components/game/LoaderCard";
 import { useMutation } from "react-query";
 import { endGame } from "services/apiClient";
 import { useToast } from "components/ui/useToast";
 import { getErrorMessage } from "lib/errorHandling";
 import useSocket from "hooks/useSocket";
-import useScreenChange from "hooks/useScreenChange";
+import { AnimatePresence } from "framer-motion";
+import Loader from "components/game/Loader";
 const PlayTime = lazy(() => import("components/game/PlayTime"));
 const GameResults = lazy(() => import("components/game/GameResults"));
 
 const GameRoom = () => {
   const [question, setQuestion] = useState<Question | null>(null);
   const [result, setResult] = useState<User[] | null>(null);
-  const {
-    space,
-    participents,
-    setParticipents,
-    session,
-    setSession,
-    gameStatus,
-    setGameStatus,
-    setSelectedGameType,
-    setGameSummary,
-    setQuestionCounter,
-    setHasEveryoneAnswered,
-    resetGame,
-    resetAll,
-  } = useGameContext();
+
+  const space = useGameStore((state) => state.space);
+  const participents = useGameStore((state) => state.participents);
+  const setParticipents = useGameStore((state) => state.setParticipents);
+  const session = useGameStore((state) => state.session);
+  const setSession = useGameStore((state) => state.setSession);
+  const gameStatus = useGameStore((state) => state.gameStatus);
+  const setGameStatus = useGameStore((state) => state.setGameStatus);
+  const setSelectedGameType = useGameStore(
+    (state) => state.setSelectedGameType
+  );
+  const setGameSummary = useGameStore((state) => state.setGameSummary);
+  const setQuestionCounter = useGameStore((state) => state.setQuestionCounter);
+  const setHasEveryoneAnswered = useGameStore(
+    (state) => state.setHasEveryoneAnswered
+  );
+  const resetGame = useGameStore((state) => state.resetGame);
+  const resetAll = useGameStore((state) => state.resetAll);
+
   const { user } = useAuthContext();
   const navigate = useNavigate();
   const { toast } = useToast();
-  useScreenChange({ resetAll }); // Reset game when tab is closed or navigated away
 
-  const handleMessage = useCallback((data: any) => {
-    const pubnubData = data?.data as PUBNUB_MESSAGE;
+  const handleMessage = useCallback(
+    (data: any) => {
+      const wsData = data?.data as WS_MESSAGE;
 
-    switch (pubnubData.type) {
-      case PUBNUB_MESSAGE_TYPE.JOIN:
-        if (user?.id === pubnubData.user.id || !pubnubData?.users?.length)
-          return;
-        setParticipents(pubnubData.users);
-        break;
-      case PUBNUB_MESSAGE_TYPE.LEAVE:
-        setParticipents((prev) => {
-          if (!prev.length) return prev;
-          if (pubnubData.user.id === user?.id) return prev;
-          return prev.filter(
-            (participent) => participent.id !== pubnubData.user.id
-          );
-        });
-        break;
-      case PUBNUB_MESSAGE_TYPE.START_GAME:
-        setGameStatus(GAME_STATUS.SHOWING_QUESTION);
-        setQuestionCounter(1);
-        setResult(null);
-        setSession(pubnubData.session);
-        setQuestion(pubnubData.question);
-        setSelectedGameType(pubnubData.questionType);
-        setParticipents(pubnubData.users);
-        setGameSummary([]);
-        break;
-      case PUBNUB_MESSAGE_TYPE.END_GAME:
-        setQuestion(null);
-        setResult(null);
-        setSession(null);
-        setGameStatus(GAME_STATUS.GAME_OVER);
-        setGameSummary(pubnubData.users);
-        break;
-      case PUBNUB_MESSAGE_TYPE.NEXT_QUESTION:
-        setQuestionCounter((prev) => prev + 1);
-        setGameStatus(GAME_STATUS.SHOWING_QUESTION);
-        setParticipents(pubnubData.users);
-        setResult(null);
-        setQuestion(pubnubData.question);
-        break;
-      case PUBNUB_MESSAGE_TYPE.NEXT_RESULT:
-        setResult(pubnubData.users);
-        setGameStatus(GAME_STATUS.SHOWING_RESULT);
-        break;
-      case PUBNUB_MESSAGE_TYPE.BACK_TO_OPTIONS:
-        resetGame();
-        break;
-      case PUBNUB_MESSAGE_TYPE.ALL_ANSWERS_SUBMITTED:
-        setHasEveryoneAnswered(true);
-        break;
-    }
-  }, []);
+      switch (wsData.type) {
+        case WS_MESSAGE_TYPE.JOIN:
+          if (user?.id === wsData.user.id || !wsData?.users?.length) return;
+          setParticipents(wsData.users);
+          break;
+        case WS_MESSAGE_TYPE.LEAVE:
+          setParticipents((prev) => {
+            if (!prev.length) return prev;
+            if (wsData.user.id === user?.id) return prev;
+            return prev.filter(
+              (participent) => participent.id !== wsData.user.id
+            );
+          });
+          break;
+        case WS_MESSAGE_TYPE.START_GAME:
+          setGameStatus(GAME_STATUS.SHOWING_QUESTION);
+          setQuestionCounter(1);
+          setResult(null);
+          setSession(wsData.session);
+          setQuestion(wsData.question);
+          setSelectedGameType(wsData.questionType);
+          setParticipents(wsData.users);
+          setGameSummary([]);
+          break;
+        case WS_MESSAGE_TYPE.END_GAME:
+          setQuestion(null);
+          setResult(null);
+          setSession(null);
+          setGameStatus(GAME_STATUS.GAME_OVER);
+          setGameSummary(wsData.users);
+          break;
+        case WS_MESSAGE_TYPE.NEXT_QUESTION:
+          setQuestionCounter((prev) => prev + 1);
+          setGameStatus(GAME_STATUS.SHOWING_QUESTION);
+          setParticipents(wsData.users);
+          setResult(null);
+          setQuestion(wsData.question);
+          break;
+        case WS_MESSAGE_TYPE.NEXT_RESULT:
+          setResult(wsData.users);
+          setGameStatus(GAME_STATUS.SHOWING_RESULT);
+          break;
+        case WS_MESSAGE_TYPE.BACK_TO_OPTIONS:
+          resetGame();
+          break;
+        case WS_MESSAGE_TYPE.ALL_ANSWERS_SUBMITTED:
+          setHasEveryoneAnswered(true);
+          break;
+      }
+    },
+    [
+      resetGame,
+      setGameStatus,
+      setGameSummary,
+      setHasEveryoneAnswered,
+      setParticipents,
+      setQuestionCounter,
+      setSelectedGameType,
+      setSession,
+      user?.id,
+    ]
+  );
 
-  const { sendMessage } = useSocket({ handleMessage, channel: space?.channel });
+  useSocket({ handleMessage, channel: space?.channel });
+
   const { mutate: TriggerEndingGame, isLoading: loadingFinishGame } =
     useMutation(() => endGame(session!.id), {
       onError: (err) => {
         toast({ title: getErrorMessage(err), variant: "destructive" });
       },
     });
-  const finishGame = () => {
+
+  const finishGame = useCallback(() => {
     TriggerEndingGame();
-  };
+  }, [TriggerEndingGame]);
 
   useEffect(() => {
     if (!space || !user) {
       navigate("/");
       return;
     }
-  }, []);
+  }, [navigate, space, user]);
 
   if (!space || !user) return null;
   return (
-    <div className="page-height w-full flex flex-col">
-      <div className="h-[calc(100%-4rem)] flex flex-col flex-shrink-0 text-center px-4">
-        <Suspense fallback={<LoaderCard />}>
-          {gameStatus === GAME_STATUS.PRE_GAME ? (
-            <WaitingRoom />
-          ) : gameStatus === GAME_STATUS.GAME_OVER ? (
-            <GameResults />
-          ) : (
-            <PlayTime
-              question={question}
-              result={result}
-              finishGame={finishGame}
-              loadingFinishGame={loadingFinishGame}
-            />
-          )}
+    <div className="flex flex-col flex-1 gap-4">
+      <div className="flex-1 flex flex-col flex-shrink-0 text-center overflow-hidden">
+        <Suspense fallback={<Loader />}>
+          <AnimatePresence mode="wait">
+            {gameStatus === GAME_STATUS.PRE_GAME ? (
+              <WaitingRoom key={"preGame"} />
+            ) : gameStatus === GAME_STATUS.GAME_OVER ? (
+              <GameResults key={"gameOver"} />
+            ) : (
+              <PlayTime
+                key={"playtime"}
+                question={question}
+                result={result}
+                finishGame={finishGame}
+                loadingFinishGame={loadingFinishGame}
+              />
+            )}
+          </AnimatePresence>
         </Suspense>
       </div>
       {!!participents.length && (
